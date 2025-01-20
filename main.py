@@ -1,7 +1,6 @@
-import random
-import time
 import duolingo
 import inspect
+import psycopg2
 
 source = inspect.getsource(duolingo)
 new_source = source.replace("jwt=None", "jwt")
@@ -16,12 +15,45 @@ lingo = duolingo.Duolingo(
 vocab = lingo.get_vocabulary(
     language_abbr="ja"
 )  # vocab is a list of dictionaries for each word
-# for number, word in enumerate(known_words):
-#     print(f"{number}: {word}")
+
+# Database connection setup
+conn = psycopg2.connect(
+    dbname="your_dbname",
+    user="your_username",
+    password="your_password",
+    host="your_host",
+    port="your_port",
+)
+cur = conn.cursor()
+
+# Create table if not exists
+cur.execute(
+    """
+CREATE TABLE IF NOT EXISTS vocabulary (
+    id SERIAL PRIMARY KEY,
+    number INTEGER,
+    text VARCHAR(255),
+    translation TEXT,
+    audioURL VARCHAR(255)
+)
+"""
+)
+conn.commit()
 
 for number, word in enumerate(vocab):  # word is a dictionary containing key value pairs
     # print(f"{number}: {word["text"]} - {word["translations"][0]}")
+    print(word)
     number = number
     text = word["text"]
     translation = word["translations"]
-    print(number, text, translation)
+    audioURL = word["audioURL"]
+    print(f"|{number}|{text}|{translation}|{audioURL}")
+    cur.execute(
+        "INSERT INTO vocabulary (number, text, translation, audioURL) VALUES (%s, %s, %s, %s)",
+        (number, text, translation, audioURL),
+    )
+
+# remove duplicates from database
+conn.commit()
+cur.close()
+conn.close()

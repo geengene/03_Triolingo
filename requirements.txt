@@ -1,2 +1,4 @@
 requests
+duolingo-api
+psycopg2
 
