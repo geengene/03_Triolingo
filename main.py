@@ -31,7 +31,7 @@ cur.execute(
     """
 CREATE TABLE IF NOT EXISTS vocabulary (
     id SERIAL PRIMARY KEY,
-    text VARCHAR(255),
+    text VARCHAR(255) UNIQUE,
     translation TEXT,
     audioURL VARCHAR(255)
 )
@@ -39,21 +39,15 @@ CREATE TABLE IF NOT EXISTS vocabulary (
 )
 conn.commit()
 
-vocab_arr = []
 for number, word in enumerate(vocab):  # word is a dictionary containing key value pairs
-    # print(f"{number}: {word["text"]} - {word["translations"][0]}")
     text = word["text"]
     translation = word["translations"]
     audioURL = word["audioURL"]
     print(f"|{text}|{translation}|{audioURL}|")
-    if text not in vocab_arr:
-        cur.execute(
-            "INSERT INTO vocabulary (text, translation, audioURL) VALUES (%s, %s, %s)",
-            (text, translation, audioURL),
-        )
-        vocab_arr.append(text)
-    else:
-        pass
+    cur.execute(
+        "INSERT INTO vocabulary (text, translation, audioURL) VALUES (%s, %s, %s) ON CONFLICT (text) DO NOTHING",
+        (text, translation, audioURL),
+    )
 
 conn.commit()
 cur.close()

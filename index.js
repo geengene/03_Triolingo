@@ -1,12 +1,16 @@
-const { exec } = require("child_process");
-const express = require("express");
-const { Pool } = require("pg");
+import { exec } from "child_process";
+import express from "express";
+import { Pool } from "pg";
 
 const app = express();
 const port = 3000;
 
+app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // PostgreSQL connection setup
-const pg = new Pg({
+const pool = new Pool({
   user: "postgres",
   host: "localhost",
   database: "duolingo",
@@ -30,7 +34,7 @@ app.get("/populate", (req, res) => {
 // Route to get data from PostgreSQL
 app.get("/vocabulary", async (req, res) => {
   try {
-    const result = await pg.query("SELECT * FROM vocabulary");
+    const result = await pool.query("SELECT * FROM vocabulary");
     res.json(result.rows);
   } catch (err) {
     console.error(err);
