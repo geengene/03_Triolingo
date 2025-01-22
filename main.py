@@ -18,11 +18,11 @@ vocab = lingo.get_vocabulary(
 
 # Database connection setup
 conn = psycopg2.connect(
-    dbname="your_dbname",
-    user="your_username",
-    password="your_password",
-    host="your_host",
-    port="your_port",
+    dbname="duolingo",
+    user="postgres",
+    password="0490258",
+    host="localhost",
+    port="5432",
 )
 cur = conn.cursor()
 
@@ -31,7 +31,6 @@ cur.execute(
     """
 CREATE TABLE IF NOT EXISTS vocabulary (
     id SERIAL PRIMARY KEY,
-    number INTEGER,
     text VARCHAR(255),
     translation TEXT,
     audioURL VARCHAR(255)
@@ -40,20 +39,22 @@ CREATE TABLE IF NOT EXISTS vocabulary (
 )
 conn.commit()
 
+vocab_arr = []
 for number, word in enumerate(vocab):  # word is a dictionary containing key value pairs
     # print(f"{number}: {word["text"]} - {word["translations"][0]}")
-    print(word)
-    number = number
     text = word["text"]
     translation = word["translations"]
     audioURL = word["audioURL"]
-    print(f"|{number}|{text}|{translation}|{audioURL}")
-    cur.execute(
-        "INSERT INTO vocabulary (number, text, translation, audioURL) VALUES (%s, %s, %s, %s)",
-        (number, text, translation, audioURL),
-    )
+    print(f"|{text}|{translation}|{audioURL}|")
+    if text not in vocab:
+        cur.execute(
+            "INSERT INTO vocabulary (text, translation, audioURL) VALUES (%s, %s, %s)",
+            (text, translation, audioURL),
+        )
+        vocab_arr.append(text)
+    else:
+        pass
 
-# remove duplicates from database
 conn.commit()
 cur.close()
 conn.close()
