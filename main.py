@@ -11,10 +11,16 @@ lingo = duolingo.Duolingo(
     "geengene",
     jwt="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjYzMDcyMDAwMDAsImlhdCI6MCwic3ViIjoxNDI1NjI3MDAzfQ.9BF614NVShsb12Qafe9rFmqKa_wvAlyOQO_Z9qmCi88",
 )
+
+# print(lingo.get_user_info())
+# print(lingo.get_languages(abbreviations=True))
+# print(lingo.get_known_topics("ja"))
 # known_words = lingo.get_known_words('ja')
+
 vocab = lingo.get_vocabulary(
     language_abbr="ja"
 )  # vocab is a list of dictionaries for each word
+
 
 # Database connection setup
 conn = psycopg2.connect(

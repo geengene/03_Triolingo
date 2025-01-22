@@ -1,6 +1,6 @@
-import { exec } from "child_process";
-import express from "express";
-import { Pool } from "pg";
+const { exec } = require("child_process");
+const express = require("express");
+const { Pool } = require("pg");
 
 const app = express();
 const port = 3000;
@@ -18,6 +18,11 @@ const pool = new Pool({
   port: 5432,
 });
 
+app.get("/", (req, res) => {
+  data = "";
+  res.render("main.ejs");
+});
+
 // Route to trigger the Python script
 app.get("/populate", (req, res) => {
   exec("python main.py", (error, stdout, stderr) => {
@@ -28,6 +33,7 @@ app.get("/populate", (req, res) => {
     console.log(`stdout: ${stdout}`);
     console.error(`stderr: ${stderr}`);
     res.send("Database populated");
+    res.redirect("/");
   });
 });
 
