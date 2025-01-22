@@ -46,7 +46,7 @@ for number, word in enumerate(vocab):  # word is a dictionary containing key val
     translation = word["translations"]
     audioURL = word["audioURL"]
     print(f"|{text}|{translation}|{audioURL}|")
-    if text not in vocab:
+    if text not in vocab_arr:
         cur.execute(
             "INSERT INTO vocabulary (text, translation, audioURL) VALUES (%s, %s, %s)",
             (text, translation, audioURL),
