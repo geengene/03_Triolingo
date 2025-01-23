@@ -3,10 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Duolingo Leaner</title>
+    <title>Duolingo Learner</title>
   </head>
   <body>
     <button onclick="window.location.href='/populate'">Update database</button>
-    <%= %>
+    <% words.forEach(word => { %>
+    <h4><%= word.text %></h4>
+    <h4><%= word.translation %></h4>
+    <% }) %>
   </body>
 </html>

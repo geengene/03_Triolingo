@@ -18,9 +18,12 @@ const pool = new Pool({
   port: 5432,
 });
 
-app.get("/", (req, res) => {
-  data = "";
-  res.render("main.ejs");
+app.get("/", async (req, res) => {
+  const words = await pool.query("SELECT * FROM vocabulary");
+  const word = words.rows;
+  res.render("main.ejs", {
+    words: word,
+  });
 });
 
 // Route to trigger the Python script
@@ -32,7 +35,7 @@ app.get("/populate", (req, res) => {
     }
     console.log(`stdout: ${stdout}`);
     console.error(`stderr: ${stderr}`);
-    res.send("Database populated");
+    // res.sendStatus(201);
     res.redirect("/");
   });
 });
