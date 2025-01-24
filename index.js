@@ -19,11 +19,7 @@ const pool = new Pool({
 });
 
 app.get("/", async (req, res) => {
-  const words = await pool.query("SELECT * FROM vocabulary");
-  const word = words.rows;
-  res.render("main.ejs", {
-    words: word,
-  });
+  res.render("main.ejs");
 });
 
 // Route to trigger the Python script
@@ -36,18 +32,33 @@ app.get("/populate", async (req, res) => {
     console.log(`stdout: ${stdout}`);
     console.error(`stderr: ${stderr}`);
     // res.sendStatus(201);
-    res.redirect("/");
+    res.redirect("/vocabulary");
   });
 });
 
 // Route to get data from PostgreSQL
 app.get("/vocabulary", async (req, res) => {
-  try {
-    const result = await pool.query("SELECT * FROM vocabulary");
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error retrieving data");
+  const words = await pool.query(`
+    SELECT * 
+    FROM information_schema.tables 
+    WHERE table_name = 'vocabulary'
+  `);
+  if (words.rows.length > 0) {
+    const vocab = await pool.query("SELECT * FROM vocabulary");
+    if (vocab) {
+      const word = vocab.rows;
+      res.render("vocabulary.ejs", {
+        words: word,
+      });
+    } else {
+      res.render("vocabulary.ejs", {
+        words: [],
+      });
+    }
+  } else {
+    res.render("vocabulary.ejs", {
+      words: [],
+    });
   }
 });
 

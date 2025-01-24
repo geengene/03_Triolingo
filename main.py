@@ -7,22 +7,20 @@ new_source = source.replace("jwt=None", "jwt")
 new_source = source.replace("self.jwt = None", " ")
 exec(new_source, duolingo.__dict__)
 
-lingo = duolingo.Duolingo(
-    "geengene",
-    jwt="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjYzMDcyMDAwMDAsImlhdCI6MCwic3ViIjoxNDI1NjI3MDAzfQ.9BF614NVShsb12Qafe9rFmqKa_wvAlyOQO_Z9qmCi88",
-)
-
-vocab = lingo.get_vocabulary(
-    language_abbr="ja"
-)  # vocab is a list of dictionaries for each word
-
 # lingo = duolingo.Duolingo(
-#     "alexisanggg",
-#     jwt="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjYzMDcyMDAwMDAsImlhdCI6MCwic3ViIjoxMjMxMjU3NjkwfQ.xH8-Mw_IjNtijAzwfXzikUKQPcVWq-tBpx038Jb7GLs",
-# )
-# vocab = lingo.get_vocabulary(
-#     language_abbr="es"
+#     "geengene",
+#     jwt="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjYzMDcyMDAwMDAsImlhdCI6MCwic3ViIjoxNDI1NjI3MDAzfQ.9BF614NVShsb12Qafe9rFmqKa_wvAlyOQO_Z9qmCi88",
 # )  # vocab is a list of dictionaries for each word
+
+# vocab = lingo.get_vocabulary(language_abbr="ja")
+
+lingo = duolingo.Duolingo(
+    "alexisanggg",
+    jwt="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjYzMDcyMDAwMDAsImlhdCI6MCwic3ViIjoxMjMxMjU3NjkwfQ.xH8-Mw_IjNtijAzwfXzikUKQPcVWq-tBpx038Jb7GLs",
+)
+vocab = lingo.get_vocabulary(
+    language_abbr="es"
+)  # vocab is a list of dictionaries for each word
 
 # print(lingo.get_user_info())
 # print(lingo.get_languages(abbreviations=True))
