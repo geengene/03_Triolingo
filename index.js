@@ -47,16 +47,16 @@ app.get("/vocabulary", async (req, res) => {
     const vocab = await pool.query("SELECT * FROM vocabulary");
     if (vocab) {
       const word = vocab.rows;
-      res.render("vocabulary.ejs", {
+      res.render("vocab.ejs", {
         words: word,
       });
     } else {
-      res.render("vocabulary.ejs", {
+      res.render("vocab.ejs", {
         words: [],
       });
     }
   } else {
-    res.render("vocabulary.ejs", {
+    res.render("vocab.ejs", {
       words: [],
     });
   }

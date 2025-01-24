@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/vocab.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- TODO: make it anki flashcard style for practice, and beautify the view all vocab page  -->
+    <!-- TODO: show by catrgory, or  -->
+    <% if (!words || words.length === 0) { %>
+    <h1>No words in database yet.</h1>
+    <% } else { words.forEach(word => { %>
+    <div class="vocab">
+      <h4><%= word.text %></h4>
+      <p><%= word.translation %></p>
+      <audio controls>
+        <!-- FIXME: solve too many webmediaplayer -->
+        <source src="<%= word.audiourl %>" type="audio/mpeg" />
+      </audio>
+    </div>
+    <% })} %>
+  </body>
+</html>

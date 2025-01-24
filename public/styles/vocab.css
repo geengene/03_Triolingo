@@ -1,0 +1,12 @@
+.vocab {
+  border-style: solid;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+}
+.vocab * {
+  margin: 8px;
+}
+.vocab h4 {
+  font-size: larger;
+}
