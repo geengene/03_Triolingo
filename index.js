@@ -1,30 +1,32 @@
-const { exec } = require("child_process");
-const express = require("express");
-const { Pool } = require("pg");
+import exec from "child_process";
+import express from "express";
+import pg from "pg";
+import env from "dotenv";
 
 const app = express();
 const port = 3000;
+env.config();
 
 app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// PostgreSQL connection setup
-const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "duolingo",
-  password: "0490258",
-  port: 5432,
+const db = new pg.Client({
+  user: process.env(USER),
+  host: process.env(HOST),
+  database: process.env(DB_NAME),
+  password: process.env(PASSWORD),
+  port: process.env(PORT),
 });
+db.connect();
 
 app.get("/", async (req, res) => {
   res.render("main.ejs");
 });
 
-// Route to trigger the Python script
 app.get("/populate", async (req, res) => {
   exec("python main.py", (error, stdout, stderr) => {
+    //trigger python script
     if (error) {
       console.error(`Error executing script: ${error}`);
       return res.status(500).send("Error executing script");
@@ -36,7 +38,6 @@ app.get("/populate", async (req, res) => {
   });
 });
 
-// Route to get data from PostgreSQL
 app.get("/vocabulary", async (req, res) => {
   const words = await pool.query(`
     SELECT * 
