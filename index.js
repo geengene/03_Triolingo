@@ -27,7 +27,7 @@ app.get("/", async (req, res) => {
 });
 
 // Route to trigger the Python script
-app.get("/populate", (req, res) => {
+app.get("/populate", async (req, res) => {
   exec("python main.py", (error, stdout, stderr) => {
     if (error) {
       console.error(`Error executing script: ${error}`);

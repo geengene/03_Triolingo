@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Duolingo Learner</title>
   </head>
+
   <body>
     <button onclick="window.location.href='/populate'">Update database</button>
-    <% words.forEach(word => { %>
+    <% if (!words || words.length === 0) { %>
+    <h1>No words in database yet.</h1>
+    <% } else { words.forEach(word => { %>
     <h4><%= word.text %></h4>
-    <h4><%= word.translation %></h4>
-    <% }) %>
+    <p><%= word.translation %></p>
+    <% })} %>
   </body>
 </html>
