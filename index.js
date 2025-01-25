@@ -39,13 +39,13 @@ app.get("/populate", async (req, res) => {
 });
 
 app.get("/vocabulary", async (req, res) => {
-  const words = await pool.query(`
+  const words = await db.query(`
     SELECT * 
     FROM information_schema.tables 
     WHERE table_name = 'vocabulary'
   `);
   if (words.rows.length > 0) {
-    const vocab = await pool.query("SELECT * FROM vocabulary");
+    const vocab = await db.query("SELECT * FROM vocabulary");
     if (vocab) {
       const word = vocab.rows;
       res.render("vocab.ejs", {
