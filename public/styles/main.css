@@ -1,0 +1,25 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+.welcomeText {
+  text-align: center;
+}
+.actionButtons {
+  display: grid;
+  grid-template-columns: 20vw 20vw;
+  grid-auto-rows: 20vw;
+  column-gap: 10px;
+  row-gap: 10px;
+  justify-content: center;
+}
+.actionButtons button {
+  border-style: solid;
+  border-radius: 8px;
+  font-size: xx-large;
+}
+
+.actionButtons button:hover {
+  background-color: rgb(193, 205, 195);
+  cursor: pointer;
+}
