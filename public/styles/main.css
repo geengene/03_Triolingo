@@ -16,7 +16,7 @@ body {
 .actionButtons button {
   border-style: solid;
   border-radius: 8px;
-  font-size: xx-large;
+  font-size: x-large;
 }
 
 .actionButtons button:hover {
