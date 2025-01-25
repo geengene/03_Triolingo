@@ -1,4 +1,4 @@
-import exec from "child_process";
+import { exec } from "child_process";
 import express from "express";
 import pg from "pg";
 import env from "dotenv";
@@ -12,11 +12,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = new pg.Client({
-  user: process.env(USER),
-  host: process.env(HOST),
-  database: process.env(DB_NAME),
-  password: process.env(PASSWORD),
-  port: process.env(PORT),
+  user: process.env.USER,
+  host: process.env.HOST,
+  database: process.env.DB_NAME,
+  password: process.env.PASSWORD,
+  port: process.env.PORT,
 });
 db.connect();
 
