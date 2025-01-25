@@ -1,6 +1,9 @@
 <header>
   <h1>Language Learner</h1>
-  <button onclick="window.location.href='/populate'">Update database</button>
+  <div>
+    <button onclick="window.location.href='/populate'">Update Database</button>
+    <button onclick="window.location.href='/database'">Check Database</button>
+  </div>
 </header>
 <style>
   header {
@@ -9,7 +12,7 @@
     flex-direction: row;
     justify-content: space-between;
     background-color: khaki;
-    color: green;
+    color: #28a745;
     width: 100vw;
     margin: 0;
     padding: 0px 20px;
@@ -19,8 +22,8 @@
     background-color: #007bff;
     color: white;
     border: none;
-    margin: 0 2vw;
-    padding: 10px 10px;
+    margin: 0;
+    padding: 10px 20px;
     cursor: pointer;
     font-size: 16px;
     border-radius: 4px;
@@ -28,5 +31,13 @@
   }
   header button:hover {
     background-color: #0056b3;
+  }
+  header button:nth-of-type(2) {
+    background-color: #28a745;
+    margin-right: 2vw;
+    transition: background-color 0.3s ease;
+  }
+  header button:nth-of-type(2):hover {
+    background-color: #196e2d;
   }
 </style>

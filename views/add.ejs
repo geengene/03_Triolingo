@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/add.css" />
+    <title>Add</title>
+  </head>
+  <body>
+    <div class="formContainer">
+      <form action="/add-to-database" method="POST">
+        <div class="formGroup">
+          <h2>Word:</h2>
+          <input type="text" name="word" required />
+        </div>
+        <div class="formGroup">
+          <h3>Translation:</h3>
+          <input type="text" name="translation" required /><br />
+        </div>
+        <div class="formGroup">
+          <h4>Audio:</h4>
+          <textarea name="audio"></textarea><br />
+        </div>
+        <input type="submit" value="Submit" required />
+      </form>
+    </div>
+  </body>
+</html>

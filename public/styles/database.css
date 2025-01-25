@@ -1,12 +1,17 @@
-.vocab {
+body {
+  margin: 0;
+  padding: 0;
+}
+.database {
   border-style: solid;
+  margin: 0 5px;
   padding: 8px;
   display: flex;
   align-items: center;
 }
-.vocab * {
+.database * {
   margin: 8px;
 }
-.vocab h4 {
+.database h4 {
   font-size: larger;
 }

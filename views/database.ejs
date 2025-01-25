@@ -3,16 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/styles/vocab.css" />
+    <link rel="stylesheet" href="/styles/database.css" />
     <title>Document</title>
   </head>
   <body>
+    <%- include("partials/databaseheader.ejs") %>
     <!-- TODO: make it anki flashcard style for practice, and beautify the view all vocab page  -->
     <!-- TODO: show by catrgory, or  -->
     <% if (!words || words.length === 0) { %>
     <h1>No words in database yet.</h1>
     <% } else { words.forEach(word => { %>
-    <div class="vocab">
+    <div class="database">
       <h4><%= word.text %></h4>
       <p><%= word.translation %></p>
       <audio controls>

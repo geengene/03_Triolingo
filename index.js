@@ -35,13 +35,12 @@ app.get("/populate", async (req, res) => {
       }
       console.log(`stdout: ${stdout}`);
       console.error(`stderr: ${stderr}`);
-      // res.sendStatus(201);
-      res.redirect("/vocabulary");
+      res.redirect("/database");
     }
   );
 });
 
-app.get("/vocabulary", async (req, res) => {
+app.get("/database", async (req, res) => {
   const words = await db.query(`
     SELECT * 
     FROM information_schema.tables 
@@ -51,21 +50,34 @@ app.get("/vocabulary", async (req, res) => {
     const vocab = await db.query("SELECT * FROM vocabulary");
     if (vocab) {
       const word = vocab.rows;
-      res.render("vocab.ejs", {
+      res.render("database.ejs", {
         words: word,
       });
     } else {
-      res.render("vocab.ejs", {
+      res.render("database.ejs", {
         words: [],
       });
     }
   } else {
-    res.render("vocab.ejs", {
+    res.render("database.ejs", {
       words: [],
     });
   }
 });
+app.get("/add-to-database", async (req, res) => {
+  res.render("add.ejs");
+});
 
+app.post("/add-to-database", async (req, res) => {
+  const vocab = req.body;
+  const result = await db.query("SELECT COUNT(*) FROM vocabulary");
+  const id = parseInt(result.rows[0].count) + 1;
+  await db.query(
+    "INSERT INTO vocabulary (id, text, translation) VALUES($1, $2, $3)",
+    [id, vocab.word, [vocab.translation]]
+  );
+  res.redirect("/database");
+});
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
