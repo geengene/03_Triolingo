@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = new pg.Client({
-  user: process.env.USER,
+  user: process.env.USER_NAME,
   host: process.env.HOST,
   database: process.env.DB_NAME,
   password: process.env.PASSWORD,
@@ -25,17 +25,20 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/populate", async (req, res) => {
-  exec("python main.py", (error, stdout, stderr) => {
-    //trigger python script
-    if (error) {
-      console.error(`Error executing script: ${error}`);
-      return res.status(500).send("Error executing script");
+  exec(
+    "source ./venv/bin/activate && python main.py",
+    (error, stdout, stderr) => {
+      //trigger python script
+      if (error) {
+        console.error(`Error executing script: ${error}`);
+        return res.status(500).send("Error executing script");
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+      // res.sendStatus(201);
+      res.redirect("/vocabulary");
     }
-    console.log(`stdout: ${stdout}`);
-    console.error(`stderr: ${stderr}`);
-    // res.sendStatus(201);
-    res.redirect("/vocabulary");
-  });
+  );
 });
 
 app.get("/vocabulary", async (req, res) => {
