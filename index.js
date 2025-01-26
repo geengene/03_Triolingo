@@ -79,7 +79,6 @@ app.post("/database/add-to-database", async (req, res) => {
 });
 
 app.get("/database/edit/:id", async (req, res) => {
-  console.log(req.params);
   const wordId = req.params.id;
   const vocab = await db.query("SELECT * FROM vocabulary WHERE id = $1", [
     wordId,
