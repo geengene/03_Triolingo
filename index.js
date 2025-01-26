@@ -47,7 +47,7 @@ app.get("/database", async (req, res) => {
     WHERE table_name = 'vocabulary'
   `);
   if (words.rows.length > 0) {
-    const vocab = await db.query("SELECT * FROM vocabulary");
+    const vocab = await db.query("SELECT * FROM vocabulary ORDER BY id ASC");
     if (vocab) {
       const word = vocab.rows;
       res.render("database.ejs", {
@@ -64,20 +64,48 @@ app.get("/database", async (req, res) => {
     });
   }
 });
-app.get("/add-to-database", async (req, res) => {
+
+app.get("/database/add-to-database", async (req, res) => {
   res.render("add.ejs");
 });
 
-app.post("/add-to-database", async (req, res) => {
+app.post("/database/add-to-database", async (req, res) => {
   const vocab = req.body;
-  const result = await db.query("SELECT COUNT(*) FROM vocabulary");
-  const id = parseInt(result.rows[0].count) + 1;
+  await db.query("INSERT INTO vocabulary (text, translation) VALUES($1, $2)", [
+    vocab.word,
+    [vocab.translation],
+  ]);
+  res.redirect("/database");
+});
+
+app.get("/database/edit/:id", async (req, res) => {
+  console.log(req.params);
+  const wordId = req.params.id;
+  const vocab = await db.query("SELECT * FROM vocabulary WHERE id = $1", [
+    wordId,
+  ]);
+  console.log(vocab.rows[0]);
+  res.render("edit.ejs", { word: vocab.rows[0], wordId });
+});
+
+app.post("/database/edit/:id", async (req, res) => {
+  console.log(req.body);
+  const vocab = req.body;
   await db.query(
-    "INSERT INTO vocabulary (id, text, translation) VALUES($1, $2, $3)",
-    [id, vocab.word, [vocab.translation]]
+    "UPDATE vocabulary SET text = $1, translation = $2 WHERE id = $3",
+    [vocab.text, [vocab.translation], req.params.id]
   );
   res.redirect("/database");
 });
+
+app.post("/database/delete", async (req, res) => {
+  console.log(req.body);
+  await db.query("DELETE FROM vocabulary WHERE id = $1", [
+    req.body.deleteWordId,
+  ]);
+  res.redirect("/database");
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });

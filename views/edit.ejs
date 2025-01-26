@@ -4,18 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/styles/add.css" />
-    <title>Add</title>
+    <title>Edit</title>
   </head>
   <body>
     <div class="formContainer">
-      <form action="/database/add-to-database" method="POST">
+      <form action="/database/edit/<%= wordId %>" method="POST">
         <div class="formGroup">
           <h2>Word:</h2>
-          <input type="text" name="word" required />
+          <input type="text" name="text" value="<%= word.text %>" required />
         </div>
         <div class="formGroup">
           <h3>Translation:</h3>
-          <input type="text" name="translation" required /><br />
+          <input
+            type="text"
+            name="translation"
+            value="<%= word.translation %>"
+            required
+          /><br />
         </div>
         <div class="formGroup">
           <h4>Audio:</h4>

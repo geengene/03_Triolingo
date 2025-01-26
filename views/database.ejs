@@ -8,7 +8,6 @@
   </head>
   <body>
     <%- include("partials/databaseheader.ejs") %>
-    <!-- TODO: make it anki flashcard style for practice, and beautify the view all vocab page  -->
     <!-- TODO: show by catrgory, or  -->
     <% if (!words || words.length === 0) { %>
     <h1>No words in database yet.</h1>
@@ -20,6 +19,16 @@
         <!-- FIXME: solve too many webmediaplayer -->
         <source src="<%= word.audiourl %>" type="audio/mpeg" />
       </audio>
+      <div class="actionButtons">
+        <button onclick="window.location.href='/database/edit/<%= word.id %>'">
+          edit
+        </button>
+        <form action="/database/delete" method="post">
+          <button type="submit" name="deleteWordId" value="<%= word.id %>">
+            Delete
+          </button>
+        </form>
+      </div>
     </div>
     <% })} %>
   </body>
