@@ -41,27 +41,13 @@ app.get("/populate", async (req, res) => {
 });
 
 app.get("/database", async (req, res) => {
-  const words = await db.query(`
-    SELECT * 
-    FROM information_schema.tables 
-    WHERE table_name = 'vocabulary'
-  `);
-  if (words.rows.length > 0) {
+  try {
     const vocab = await db.query("SELECT * FROM vocabulary ORDER BY id ASC");
-    if (vocab) {
-      const word = vocab.rows;
-      res.render("database.ejs", {
-        words: word,
-      });
-    } else {
-      res.render("database.ejs", {
-        words: [],
-      });
-    }
-  } else {
     res.render("database.ejs", {
-      words: [],
+      words: vocab.rows,
     });
+  } catch (err) {
+    res.send("no words in database");
   }
 });
 
@@ -103,6 +89,15 @@ app.post("/database/delete", async (req, res) => {
     req.body.deleteWordId,
   ]);
   res.redirect("/database");
+});
+
+app.get("/practice-vocab", async (req, res) => {
+  try {
+    const vocab = await db.query("SELECT * FROM vocabulary ORDER BY id ASC");
+    res.render("practiceVocab.ejs", { words: vocab.rows });
+  } catch (err) {
+    res.send("no words in database");
+  }
 });
 
 app.listen(port, () => {
