@@ -1,0 +1,43 @@
+.card {
+  text-align: center;
+}
+.buttons {
+}
+
+.diffButton {
+  width: fit-content;
+  font-size: 1.5rem;
+  color: #333131;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 2px solid #333131;
+  box-shadow: 3px 3px #333131;
+  cursor: pointer;
+  margin: 35px 0;
+}
+
+#again {
+  background-color: #c45858;
+}
+#easy {
+  background: #56aa5a;
+}
+#medium {
+  background: #dad269;
+}
+#hard {
+  background: #d6804e;
+}
+
+.diffButton:active {
+  box-shadow: none;
+  transform: translate(3px, 3px);
+}
+.active {
+  box-shadow: none;
+  transform: translate(3px, 3px);
+}
+.hidden {
+  display: none;
+}

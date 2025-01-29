@@ -42,6 +42,9 @@ app.get("/populate", async (req, res) => {
 
 app.get("/database", async (req, res) => {
   try {
+    await db.query(
+      "CREATE TABLE IF NOT EXISTS vocabulary (id SERIAL PRIMARY KEY, text VARCHAR(255) UNIQUE, translation TEXT[], audioURL VARCHAR(255), confidence REAL DEFAULT 0)"
+    );
     const vocab = await db.query("SELECT * FROM vocabulary ORDER BY id ASC");
     res.render("database.ejs", {
       words: vocab.rows,
@@ -57,11 +60,15 @@ app.get("/database/add-to-database", async (req, res) => {
 
 app.post("/database/add-to-database", async (req, res) => {
   const vocab = req.body;
-  await db.query("INSERT INTO vocabulary (text, translation) VALUES($1, $2)", [
-    vocab.word,
-    [vocab.translation],
-  ]);
-  res.redirect("/database");
+  try {
+    await db.query(
+      "INSERT INTO vocabulary (text, translation) VALUES($1, $2)",
+      [vocab.word, [vocab.translation]]
+    );
+    res.redirect("/database");
+  } catch (err) {
+    res.send("word already in database");
+  }
 });
 
 app.get("/database/edit/:id", async (req, res) => {
@@ -91,9 +98,12 @@ app.post("/database/delete", async (req, res) => {
   res.redirect("/database");
 });
 
-app.get("/practice-vocab", async (req, res) => {
+app.get("/vocabulary", async (req, res) => {
   try {
-    const vocab = await db.query("SELECT * FROM vocabulary ORDER BY id ASC");
+    const vocab = await db.query(
+      "SELECT * FROM (SELECT * FROM vocabulary ORDER BY confidence ASC LIMIT 25) AS subquery ORDER BY RANDOM()"
+    );
+    // console.log(vocab.rows);
     res.render("practiceVocab.ejs", { words: vocab.rows });
   } catch (err) {
     res.send("no words in database");

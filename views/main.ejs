@@ -8,25 +8,19 @@
   </head>
 
   <body>
-    <%- include("partials/mainHeader.ejs") %>
+    <%- include("partials/header.ejs") %>
     <div class="welcomeText">
       <h1>Welcome</h1>
-      <h4>What would you like to do today?</h4>
+      <h4>What would you like to practice today?</h4>
     </div>
     <div class="actionButtons">
       <!-- TODO:create landing page -> username, password, get jwt token, select language,    -->
-      <button onclick="window.location.href='/practice-vocab'">
-        Practice Vocabulary
+      <button onclick="window.location.href='/vocabulary'">Vocabulary</button>
+      <button onclick="window.location.href='/pronunciation'">
+        Pronunciation
       </button>
-      <button onclick="window.location.href='/vocabulary'">
-        Practice Pronunciation
-      </button>
-      <button onclick="window.location.href='/vocabulary'">
-        Practice Writing
-      </button>
-      <button onclick="window.location.href='/vocabulary'">
-        Practice Reading
-      </button>
+      <button onclick="window.location.href='/writing'">Writing</button>
+      <button onclick="window.location.href='/reading'">Reading</button>
     </div>
   </body>
 </html>

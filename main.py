@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS vocabulary (
     id SERIAL PRIMARY KEY,
     text VARCHAR(255) UNIQUE,
     translation TEXT[],
-    audioURL VARCHAR(255)
+    audioURL VARCHAR(255),
+    confidence REAL DEFAULT 0
 )
 """
 )

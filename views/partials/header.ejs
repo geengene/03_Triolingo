@@ -2,9 +2,27 @@
   <h1>Language Learner</h1>
   <div>
     <button onclick="window.location.href='/populate'">Update Database</button>
-    <button onclick="window.location.href='/database'">Check Database</button>
+    <button id="secondaryButton">Check Database</button>
   </div>
 </header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const secondaryButton = document.getElementById("secondaryButton");
+    const currentPath = window.location.pathname;
+
+    if (currentPath === "/") {
+      secondaryButton.onclick = function () {
+        window.location.href = "/database";
+      };
+      secondaryButton.textContent = "Check Database";
+    } else if (currentPath === "/database") {
+      secondaryButton.onclick = function () {
+        window.location.href = "/database/add-to-database";
+      };
+      secondaryButton.textContent = "Add to Database";
+    }
+  });
+</script>
 <style>
   header {
     display: flex;
@@ -17,6 +35,10 @@
     margin: 0;
     padding: 0px 20px;
     text-align: justify;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
   }
   header button {
     background-color: #007bff;
