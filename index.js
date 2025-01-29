@@ -101,7 +101,7 @@ app.post("/database/delete", async (req, res) => {
 app.get("/vocabulary", async (req, res) => {
   try {
     const vocab = await db.query(
-      "SELECT * FROM (SELECT * FROM vocabulary ORDER BY confidence ASC LIMIT 25) AS subquery ORDER BY RANDOM()"
+      "SELECT * FROM (SELECT * FROM vocabulary ORDER BY confidence DESC LIMIT 25) AS subquery ORDER BY RANDOM()"
     );
     // console.log(vocab.rows);
     const currentIndex = 0;
