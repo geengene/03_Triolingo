@@ -1,4 +1,3 @@
-<!-- TODO: make it anki flashcard style for practice, and beautify the view all vocab page  -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -10,25 +9,17 @@
   <body>
     <!-- TODO: write a script that gets a random word from database, display it dynamically with hidden definition. -->
     <div class="card">
-      <h1><%= words[0].text %></h1>
-      <h2><%= words[0].translation %></h2>
+      <h1 id="wordText"><%= words[currentIndex].text %></h1>
+      <h2 class="hidden" id="wordTranslation">
+        <%= words[currentIndex].translation %>
+      </h2>
     </div>
     <div class="buttons">
-      <button class="Space diffButton" id="show">
-        <p>Show Answer</p>
-      </button>
-      <button class="Digit1 diffButton hidden" id="easy">
-        <p>Easy</p>
-      </button>
-      <button class="Digit2 diffButton hidden" id="medium">
-        <p>Medium</p>
-      </button>
-      <button class="Digit3 diffButton hidden" id="hard">
-        <p>Hard</p>
-      </button>
-      <button class="Digit4 diffButton hidden" id="again">
-        <p>Again</p>
-      </button>
+      <button class="Space diffButton" id="show">Show Answer</button>
+      <button class="Digit1 diffButton hidden" id="easy">Easy</button>
+      <button class="Digit2 diffButton hidden" id="medium">Medium</button>
+      <button class="Digit3 diffButton hidden" id="hard">Hard</button>
+      <button class="Digit4 diffButton hidden" id="again">Again</button>
     </div>
   </body>
 </html>
@@ -38,49 +29,91 @@
   const mediumButton = document.getElementById("medium");
   const hardButton = document.getElementById("hard");
   const againButton = document.getElementById("again");
+  let currentIndex = <%= currentIndex %>;
+  const words = <%- JSON.stringify(words) %>;
 
   document.addEventListener("keydown", function (event) {
-    console.log(event.code);
     if (event.code === "Space") {
       event.preventDefault(); // Prevent default spacebar action (scrolling)
       showButton.click();
-      animateButton(event.code);
     }
-    const showButtonClass = document.getElementById("show");
-    if (showButtonClass.classList.contains("hidden")) {
+    if (showButton.classList.contains("hidden")) {
       switch (event.code) {
         case "Digit1":
-          animateButton(event.code);
           easyButton.click();
           break;
         case "Digit2":
-          animateButton(event.code);
           mediumButton.click();
           break;
         case "Digit3":
-          animateButton(event.code);
           hardButton.click();
           break;
         case "Digit4":
-          animateButton(event.code);
           againButton.click();
           break;
       }
     }
   });
 
+  const diffButtons = document.getElementsByClassName("diffButton");
+  Array.from(diffButtons).forEach((button) => {
+    button.addEventListener("click", function (event) {
+      const elementId = event.srcElement.id;
+      console.log(elementId);
+      switch (elementId) {
+        case "show":
+          animateButton(elementId);
+          document.getElementById("wordTranslation").classList.remove("hidden");
+          break;
+        case "easy":
+          animateButton(elementId);
+          updateWord();
+          console.log(currentIndex);
+          break;
+        case "medium":
+          animateButton(elementId);
+          updateWord();
+          console.log(currentIndex);
+          break;
+        case "hard":
+          animateButton(elementId);
+          updateWord();
+          console.log(currentIndex);
+          break;
+        case "again":
+          animateButton(elementId);
+          updateWord();
+          console.log(currentIndex);
+          break;
+      }
+    });
+  });
+
   document.getElementById("show").addEventListener("click", function () {
+    //hides showButton, unhides other buttons
     const buttons = document.querySelectorAll(".diffButton.hidden");
     buttons.forEach((button) => button.classList.remove("hidden"));
-    const showButton = document.getElementById("show");
     showButton.classList.add("hidden");
   });
 
-  function animateButton(currentKey) {
-    const activeButton = document.querySelector("." + currentKey);
+  function animateButton(currentId) {
+    const activeButton = document.getElementById(currentId);
     activeButton.classList.add("active");
     setTimeout(function () {
       activeButton.classList.remove("active");
     }, 100);
+  }
+
+  function updateWord() {
+    // 0 - Limit
+    currentIndex = (currentIndex + 1) % words.length;
+    document.getElementById("wordText").innerText = words[currentIndex].text;
+    document.getElementById("wordTranslation").innerText =
+      words[currentIndex].translation;
+
+    document.getElementById("wordTranslation").classList.add("hidden");
+    const buttons = document.querySelectorAll(".diffButton");
+    buttons.forEach((button) => button.classList.add("hidden"));
+    showButton.classList.remove("hidden");
   }
 </script>

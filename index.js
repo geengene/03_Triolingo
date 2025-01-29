@@ -104,7 +104,8 @@ app.get("/vocabulary", async (req, res) => {
       "SELECT * FROM (SELECT * FROM vocabulary ORDER BY confidence ASC LIMIT 25) AS subquery ORDER BY RANDOM()"
     );
     // console.log(vocab.rows);
-    res.render("practiceVocab.ejs", { words: vocab.rows });
+    const currentIndex = 0;
+    res.render("practiceVocab.ejs", { words: vocab.rows, currentIndex });
   } catch (err) {
     res.send("no words in database");
   }
