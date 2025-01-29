@@ -35,7 +35,7 @@
 
   document.addEventListener("keydown", function (event) {
     if (event.code === "Space") {
-      event.preventDefault(); // Prevent default spacebar action (scrolling)
+      event.preventDefault(); // Prevent default space bar action (scrolling)
       showButton.click();
     }
     if (showButton.classList.contains("hidden")) {
@@ -107,16 +107,18 @@
   }
 
   function updateWord() {
-    // 0 - Limit
-    currentIndex = (currentIndex + 1) % words.length;
-    document.getElementById("wordText").innerText = words[currentIndex].text;
-    document.getElementById("wordTranslation").innerText =
-      words[currentIndex].translation;
+    //setTimeout(() => {
+      // 0 - Limit
+      currentIndex = (currentIndex + 1) % words.length;
+      document.getElementById("wordText").innerText = words[currentIndex].text;
+      document.getElementById("wordTranslation").innerText =
+        words[currentIndex].translation;
 
-    document.getElementById("wordTranslation").classList.add("hidden");
-    document.getElementById("textHolder").classList.remove("hidden");
-    const buttons = document.querySelectorAll(".diffButton");
-    buttons.forEach((button) => button.classList.add("hidden"));
-    showButton.classList.remove("hidden");
+      document.getElementById("wordTranslation").classList.add("hidden");
+      document.getElementById("textHolder").classList.remove("hidden");
+      const buttons = document.querySelectorAll(".diffButton");
+      buttons.forEach((button) => button.classList.add("hidden"));
+      showButton.classList.remove("hidden");
+    //}, 100);
   }
 </script>

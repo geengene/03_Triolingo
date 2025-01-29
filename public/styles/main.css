@@ -4,11 +4,12 @@ body {
 }
 .welcomeText {
   text-align: center;
+  font-size: x-large;
 }
 .actionButtons {
   display: grid;
   grid-template-columns: 20vw 20vw;
-  grid-auto-rows: 20vw;
+  grid-auto-rows: 15vw;
   column-gap: 10px;
   row-gap: 10px;
   justify-content: center;
