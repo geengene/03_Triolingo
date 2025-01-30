@@ -111,6 +111,14 @@ app.get("/vocabulary", async (req, res) => {
   }
 });
 
+app.post("/vocabulary", async (req, res) => {
+  try {
+    console.log(req.body);
+    await db.query();
+    res.status(204).send();
+  } catch (err) {}
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
