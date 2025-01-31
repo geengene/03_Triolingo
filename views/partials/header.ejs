@@ -2,26 +2,64 @@
   <h1>Language Learner</h1>
   <div>
     <button onclick="window.location.href='/populate'">Update Database</button>
-    <button id="secondaryButton">Check Database</button>
+    <button id="secondaryBtn">Check Database</button>
+    <button id="settingsBtn">Open Modal</button>
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form action="/settings" method="post">
+          <h4>Vocabulary Limit:</h4>
+          <input type="number" name="vocab_limit" min="1" max="50" required />
+            <button id="saveBtn" type="submit">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </header>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const secondaryButton = document.getElementById("secondaryButton");
+    const secondaryBtn = document.getElementById("secondaryBtn");
     const currentPath = window.location.pathname;
 
     if (currentPath === "/") {
-      secondaryButton.onclick = function () {
+      secondaryBtn.onclick = function () {
         window.location.href = "/database";
       };
-      secondaryButton.textContent = "Check Database";
+      secondaryBtn.textContent = "Check Database";
     } else if (currentPath === "/database") {
-      secondaryButton.onclick = function () {
+      secondaryBtn.onclick = function () {
         window.location.href = "/database/add-to-database";
       };
-      secondaryButton.textContent = "Add to Database";
+      secondaryBtn.textContent = "Add to Database";
     }
   });
+  // Get the modal
+  var modal = document.getElementById("myModal");
+
+  // Get the button that opens the modal
+  var settingsBtn = document.getElementById("settingsBtn");
+
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+  var saveBtn = document.getElementById("saveBtn");
+
+  // When the user clicks the button, open the modal
+  settingsBtn.onclick = function () {
+    modal.style.display = "block";
+  };
+
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function () {
+    modal.style.display = "none";
+  };
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  };
 </script>
 <style>
   header {
@@ -56,10 +94,49 @@
   }
   header button:nth-of-type(2) {
     background-color: #28a745;
-    margin-right: 2vw;
     transition: background-color 0.3s ease;
   }
   header button:nth-of-type(2):hover {
     background-color: #196e2d;
+  }
+  #settingsBtn {
+    margin-right: 2vw;
+  }
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  }
+
+  /* Modal Content */
+  .modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+  }
+
+  /* The Close Button */
+  .close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
   }
 </style>

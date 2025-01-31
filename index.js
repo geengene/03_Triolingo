@@ -24,6 +24,22 @@ app.get("/", async (req, res) => {
   res.render("main.ejs");
 });
 
+app.post("/settings", async (req, res) => {
+  try {
+    const { vocab_limit } = req.body;
+    await db.query(
+      "CREATE TABLE IF NOT EXISTS settings (id SERIAL PRIMARY KEY, vocab_limit INTEGER );"
+    );
+    await db.query(
+      "INSERT INTO settings (id, vocab_limit) VALUES (1, $1) ON CONFLICT (id) DO UPDATE SET vocab_limit = EXCLUDED.vocab_limit;",
+      [vocab_limit]
+    );
+    res.redirect("/");
+  } catch (err) {
+    res.send(err);
+  }
+});
+
 app.get("/populate", async (req, res) => {
   exec(
     "source ./venv/bin/activate && python main.py",
@@ -100,10 +116,11 @@ app.post("/database/delete", async (req, res) => {
 
 app.get("/vocabulary", async (req, res) => {
   try {
+    const settings = await db.query("SELECT * FROM settings WHERE id = 1");
     const vocab = await db.query(
-      "SELECT * FROM (SELECT * FROM vocabulary ORDER BY confidence ASC LIMIT 25) AS subquery ORDER BY RANDOM()"
+      "SELECT * FROM vocabulary ORDER BY confidence ASC, RANDOM() LIMIT $1",
+      [settings.rows[0].vocab_limit]
     );
-    // console.log(vocab.rows);
     const currentIndex = 0;
     res.render("practiceVocab.ejs", { words: vocab.rows, currentIndex });
   } catch (err) {
