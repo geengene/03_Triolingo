@@ -64,6 +64,29 @@
         </button>
       </form>
     </div>
+    <div id="modalBackground" class="modalBackground">
+      <div class="modalContent">
+        <p>You have completed a lesson. Well done!!</p>
+        <form action="/vocabulary/finish" method="post">
+          <button
+            type="submit"
+            name="modalButton"
+            value="anotherModal"
+            id="anotherModal"
+          >
+            Another round
+          </button>
+          <button
+            type="submit"
+            name="modalButton"
+            value="exitModal"
+            id="exitModal"
+          >
+            Exit
+          </button>
+        </form>
+      </div>
+    </div>
   </body>
   <script>
     const showButton = document.getElementById("show");
@@ -110,22 +133,18 @@
           case "easy":
             animateButton(elementId);
             updateWord();
-            console.log(currentIndex);
             break;
           case "medium":
             animateButton(elementId);
             updateWord();
-            console.log(currentIndex);
             break;
           case "hard":
             animateButton(elementId);
             updateWord();
-            console.log(currentIndex);
             break;
           case "again":
             animateButton(elementId);
             updateWord();
-            console.log(currentIndex);
             break;
         }
       });
@@ -149,9 +168,19 @@
       }, 100);
     }
 
+    var modal= document.getElementById("modalBackground")
+    var exitModal = document.getElementById("exitModal")
+    exitModal.onclick = function() {
+      modal.style.display = "none";
+    }
     function updateWord() {
       setTimeout(() => {
         currentIndex = (currentIndex + 1) % words.length;
+        console.log(currentIndex)
+        //TODO: when currentIndex === 0, show modal. a button closes the modal and redirect back to main page
+        if (currentIndex === 0){
+          modal.style.display = "block"
+        }
         document.getElementById("wordText").innerText = words[currentIndex].text;
         document.getElementById("wordTranslation").innerText =
           words[currentIndex].translation;

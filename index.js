@@ -140,6 +140,16 @@ app.post("/vocabulary", async (req, res) => {
   } catch (err) {}
 });
 
+app.post("/vocabulary/finish", async (req, res) => {
+  try {
+    if (req.body.modalButton === "exitModal") {
+      res.redirect("/");
+    } else if (req.body.modalButton === "anotherModal") {
+      res.redirect("/vocabulary");
+    }
+  } catch (err) {}
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
 });
