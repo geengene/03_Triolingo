@@ -1,22 +1,77 @@
-<header>
-  <h1>Language Learner</h1>
-  <div>
-    <button onclick="window.location.href='/populate'">Update Database</button>
-    <button id="secondaryBtn">Check Database</button>
-    <button id="settingsBtn">Settings</button>
-    <div id="myModal" class="modal">
-      <div class="modal-content">
-        <span class="close">&times;</span>
-        <form action="/settings" method="post">
-          <h4>Vocabulary Limit:</h4>
-          <input type="number" name="vocab_limit" min="1" max="50" required />
-            <button id="saveBtn" type="submit">Save Changes</button>
-          </div>
-        </form>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&text=settings,info"
+    />
+    <title>Header</title>
+  </head>
+  <body>
+    <header>
+      <h1>Language Learner</h1>
+      <div class="headerBtns">
+        <button onclick="window.location.href='/populate'">
+          Update Database
+        </button>
+        <button id="secondaryBtn">Check Database</button>
+        <button
+          style="
+            font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 16;
+          "
+          id="settingsBtn"
+        >
+          <span class="material-symbols-outlined"> settings </span>
+        </button>
+        <button
+          style="
+            font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 16;
+          "
+          id="infoBtn"
+        >
+          <span class="material-symbols-outlined"> info </span>
+        </button>
       </div>
-    </div>
-  </div>
-</header>
+      <div id="settingsModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <div class="settingsForm">
+            <form action="/settings" method="post">
+              <div class="vocabLimit">
+                <h4>Vocabulary Limit:</h4>
+                <input
+                  type="number"
+                  name="vocab_limit"
+                  value="<%= vocabLimit %>"
+                  min="1"
+                  max="50"
+                  required
+                />
+              </div>
+              <button id="saveBtn" type="submit">Save Changes</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div id="infoModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <div class="information">
+            <h3>Shortcuts</h3>
+            <h4>When practising Vocabulary:</h4>
+            <p>Space Bar - Reveals answer</p>
+            <p>
+              1, 2, 3 and 4 selects [easy], [medium], [hard] and [again]
+              respectively
+            </p>
+          </div>
+        </div>
+      </div>
+    </header>
+  </body>
+</html>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const secondaryBtn = document.getElementById("secondaryBtn");
@@ -34,43 +89,41 @@
       secondaryBtn.textContent = "Add to Database";
     }
   });
-  // Get the modal
-  var modal = document.getElementById("myModal");
-
-  // Get the button that opens the modal
+  var settingsModal = document.getElementById("settingsModal");
   var settingsBtn = document.getElementById("settingsBtn");
-
-  // Get the <span> element that closes the modal
-  var span = document.getElementsByClassName("close")[0];
-  var saveBtn = document.getElementById("saveBtn");
-
-  // When the user clicks the button, open the modal
+  var settingsSpan = document.getElementsByClassName("close")[0];
   settingsBtn.onclick = function () {
-    modal.style.display = "block";
+    settingsModal.style.display = "block";
   };
-
-  // When the user clicks on <span> (x), close the modal
-  span.onclick = function () {
-    modal.style.display = "none";
+  settingsSpan.onclick = function () {
+    settingsModal.style.display = "none";
   };
-
-  // When the user clicks anywhere outside of the modal, close it
+  var infoModal = document.getElementById("infoModal");
+  var infoBtn = document.getElementById("infoBtn");
+  var infoSpan = document.getElementsByClassName("close")[1];
+  infoBtn.onclick = function () {
+    infoModal.style.display = "block";
+  };
+  infoSpan.onclick = function () {
+    infoModal.style.display = "none";
+  };
   window.onclick = function (event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
+    if (event.target == settingsModal) {
+      settingsModal.style.display = "none";
+    } else if (event.target == infoModal) {
+      infoModal.style.display = "none";
     }
   };
 </script>
 <style>
   header {
     display: flex;
-    align-items: center;
     flex-direction: row;
     justify-content: space-between;
-    background-color: burlywood;
+    align-items: center;
+    background-color: rgb(233, 210, 181);
     color: #56aa5a;
     width: 100vw;
-    margin: 0;
     padding: 0px 20px;
     text-align: justify;
     position: fixed;
@@ -78,12 +131,20 @@
     left: 0;
     z-index: 1000;
   }
+  .headerBtns {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
   header button {
+    display: flex;
+    align-items: center;
     background-color: #007bff;
     color: white;
     border: none;
     margin: 0;
-    padding: 10px 20px;
+    padding: 16px 20px;
     cursor: pointer;
     font-size: 16px;
     border-radius: 4px;
@@ -100,12 +161,16 @@
     background-color: #196e2d;
   }
   #settingsBtn {
+    padding: 13px 20px;
+  }
+  #infoBtn {
+    padding: 13px 20px;
     margin-right: 2vw;
   }
   .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    z-index: 10; /* Sit on top */
     padding-top: 100px; /* Location of the box */
     left: 0;
     top: 0;
@@ -122,7 +187,8 @@
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 50%;
+    height: 80%;
   }
 
   /* The Close Button */
@@ -138,5 +204,26 @@
     color: #000;
     text-decoration: none;
     cursor: pointer;
+  }
+  .settingsForm {
+    margin: 30px 30px 30px 30px;
+    height: 100%;
+  }
+  .vocabLimit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .vocabLimit h4 {
+    font-size: 1.5rem;
+  }
+  .vocabLimit input {
+    font-size: 1.5rem;
+    height: 20px;
+    width: 60px;
+    margin: 8px;
+  }
+  #saveBtn {
+    float: right;
   }
 </style>

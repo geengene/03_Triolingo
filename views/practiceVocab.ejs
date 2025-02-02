@@ -6,8 +6,6 @@
     <link rel="stylesheet" href="/styles/practiceVocab.css" />
     <title>Practice Vocabulary</title>
   </head>
-  <!-- TODO: add info card on right upper corner for shortcuts -->
-  <!-- TODO: once end of array reached, send popup and redirect to main page -->
   <body>
     <div class="card">
       <h1 id="wordText"><%= words[currentIndex].text %></h1>
@@ -67,24 +65,26 @@
     <div id="modalBackground" class="modalBackground">
       <div class="modalContent">
         <p>You have completed a lesson. Well done!!</p>
-        <form action="/vocabulary/finish" method="post">
-          <button
-            type="submit"
-            name="modalButton"
-            value="anotherModal"
-            id="anotherModal"
-          >
-            Another round
-          </button>
-          <button
-            type="submit"
-            name="modalButton"
-            value="exitModal"
-            id="exitModal"
-          >
-            Exit
-          </button>
-        </form>
+        <div class="finishBtns">
+          <form action="/vocabulary/finish" method="post">
+            <button
+              type="submit"
+              name="modalButton"
+              value="anotherModal"
+              id="anotherModal"
+            >
+              Another round
+            </button>
+            <button
+              type="submit"
+              name="modalButton"
+              value="exitModal"
+              id="exitModal"
+            >
+              Exit
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </body>
@@ -177,7 +177,6 @@
       setTimeout(() => {
         currentIndex = (currentIndex + 1) % words.length;
         console.log(currentIndex)
-        //TODO: when currentIndex === 0, show modal. a button closes the modal and redirect back to main page
         if (currentIndex === 0){
           modal.style.display = "block"
         }

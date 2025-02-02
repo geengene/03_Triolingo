@@ -75,6 +75,7 @@ h2 {
   padding: 20px;
   border: 1px solid #888;
   width: 50%;
+  height: 80%;
 }
 
 #anotherModal {
@@ -107,4 +108,8 @@ h2 {
 .modalContent button:active {
   transform: translate(0.05em, 0.05em);
   box-shadow: 0.05em 0.05em;
+}
+
+.finishBtns {
+  float: right;
 }

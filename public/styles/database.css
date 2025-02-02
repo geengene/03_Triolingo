@@ -5,17 +5,39 @@ body {
 
 .database {
   border-style: solid;
+  border-bottom: none;
   margin: 0 5px;
   padding: 8px;
   display: flex;
+  gap: 8px;
   align-items: center;
-}
-
-.database * {
-  margin: 8px;
 }
 
 .database h4 {
   font-size: larger;
 }
-/* TODO: make database nicer format */
+
+.actionButtons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+.actionButtons button {
+  background: #fbca1f;
+  font-family: inherit;
+  padding: 10px 20px;
+  font-weight: 900;
+  font-size: 16px;
+  border: 3px solid black;
+  border-radius: 0.4rem;
+  box-shadow: 0.1rem 0.1rem;
+  cursor: pointer;
+}
+.actionButtons button:hover {
+  transform: translate(-0.05em, -0.05em);
+  box-shadow: 0.15em 0.15em;
+}
+.actionButtons button:active {
+  transform: translate(0.05em, 0.05em);
+  box-shadow: 0.05em 0.05em;
+}

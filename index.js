@@ -21,7 +21,9 @@ const db = new pg.Client({
 db.connect();
 
 app.get("/", async (req, res) => {
-  res.render("main.ejs");
+  const settings = await db.query("SELECT * FROM settings");
+  const vocabLimit = settings.rows[0].vocab_limit;
+  res.render("main.ejs", { vocabLimit });
 });
 
 app.post("/settings", async (req, res) => {
@@ -62,8 +64,11 @@ app.get("/database", async (req, res) => {
       "CREATE TABLE IF NOT EXISTS vocabulary (id SERIAL PRIMARY KEY, text VARCHAR(255) UNIQUE, translation TEXT[], audioURL VARCHAR(255), confidence REAL DEFAULT 0)"
     );
     const vocab = await db.query("SELECT * FROM vocabulary ORDER BY id ASC");
+    const settings = await db.query("SELECT * FROM settings");
+    const vocabLimit = settings.rows[0].vocab_limit;
     res.render("database.ejs", {
       words: vocab.rows,
+      vocabLimit: vocabLimit,
     });
   } catch (err) {
     res.send("no words in database");
@@ -113,7 +118,7 @@ app.post("/database/delete", async (req, res) => {
   ]);
   res.redirect("/database");
 });
-
+// TODO: integrate yomi api. i want romanji and hiragan /katakana to be available
 app.get("/vocabulary", async (req, res) => {
   try {
     const settings = await db.query("SELECT * FROM settings WHERE id = 1");
