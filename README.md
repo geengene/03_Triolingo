@@ -17,8 +17,8 @@ Ensure you have the following installed:
 1. **Clone the repository:**
 
 ```sh
-git clone https://github.com/yourusername/DuolingoApp.git
-cd DuolingoApp
+git clone https://github.com/geengene/03_Triolingo.git
+cd 03_Triolingo
 ```
 
 2. **Install dependencies:**
