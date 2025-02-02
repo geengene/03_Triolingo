@@ -11,6 +11,7 @@ Ensure you have the following installed:
 - [Node.js](https://nodejs.org/) (v14 or higher)
 - [npm](https://www.npmjs.com/) (v6 or higher)
 - [Git](https://git-scm.com/)
+- [Python]
 
 ### Installation
 
@@ -25,14 +26,28 @@ cd 03_Triolingo
 
 ```sh
 npm install
+create a python venv within project folder: `python -m venv venv` for the required dependencies
 ```
 
 ### Running the Project
 
-1. **Start the development server:**
+1. **log in to duolingo**
+   - get jwt login token by pasting this command into your console: `document.cookie.match(new RegExp('(^| )jwt_token=([^;]+)'))[0].slice(11) `
+2. **create a local database**
+   using postgres' pgadmin 4, setup a database with whatever name you prefer.
+3. **create an .env file**
+   fill in the respective details:
+   DUOLINGO_USERNAME=
+   DUOLINGO_JWT=
+   DB_NAME=
+   USER_NAME=postgres
+   PASSWORD=
+   HOST=localhost
+   PORT=5432
+4. **Start the development server:**
 
 ```sh
-npm start
+node index.js
 ```
 
 2. Open your browser and navigate to `http://localhost:3000` to see the application running.
@@ -55,9 +70,9 @@ npm test
 
 ## Project Structure
 
-- `src/` - Contains the source code of the application
 - `public/` - Contains the static assets
-- `package.json` - Lists the project dependencies and scripts
+- `package.json` - Lists the project's node dependencies and scripts
+- `requirements.txt` - Lists the python libraries required
 
 ## Contributing
 
