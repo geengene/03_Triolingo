@@ -12,10 +12,11 @@ exec(new_source, duolingo.__dict__)
 
 username = os.getenv("DUOLINGO_USERNAME")
 jwt = os.getenv("DUOLINGO_JWT")
+language = os.getenv("DUOLINGO_LANGUAGE")
 
 lingo = duolingo.Duolingo(username, jwt=jwt)
 
-vocab = lingo.get_vocabulary(language_abbr="ja")
+vocab = lingo.get_vocabulary(language_abbr=language)
 
 # print(lingo.get_user_info())
 # print(lingo.get_languages(abbreviations=True))
