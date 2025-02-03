@@ -6,7 +6,6 @@ duolingo_api.egg-info
 dev
 dev/*
 dist/
-venv/
 node_modules/
 *.log
 *.tmp

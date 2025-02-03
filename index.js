@@ -44,7 +44,7 @@ app.post("/settings", async (req, res) => {
 
 app.get("/populate", async (req, res) => {
   exec(
-    "source ./venv/bin/activate && python main.py",
+    "source ./venv/bin/activate && ./venv/bin/python main.py",
     (error, stdout, stderr) => {
       //trigger python script
       if (error) {
