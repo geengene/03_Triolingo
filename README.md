@@ -78,6 +78,8 @@ npm test
 
 - currently only practising vocabulary works
 - plans to incorporate, pronunciation, writing and reading function for an all encompassing learning experience.
+- add user authentication
+- add session management
 
 ## Contributing
 
