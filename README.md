@@ -74,6 +74,11 @@ npm test
 - `package.json` - Lists the project's node dependencies and scripts
 - `requirements.txt` - Lists the python libraries required
 
+## Road Map
+
+- currently only practising vocabulary works
+- plans to incorporate, pronunciation, writing and reading function for an all encompassing learning experience.
+
 ## Contributing
 
 If you wish to contribute to this project, please follow these steps:
