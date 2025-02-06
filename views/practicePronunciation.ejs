@@ -54,21 +54,19 @@
       recognition.start();
       console.log('Ready to receive a color command.');
     }
+
     recognition.onresult = function(event) {
       var input = event.results[0][0].transcript;
       console.log(event.results)
       recordedInput.textContent = 'Result received: ' + input + '.';
       console.log('Confidence: ' + event.results[0][0].confidence);
     }
-
     recognition.onspeechend = function() {
       recognition.stop();
     }
-
     recognition.onnomatch = function(event) {
       recordedInput.textContent = "I didn't recognise that word.";
     }
-
     recognition.onerror = function(event) {
       recordedInput.textContent = 'Error occurred in recognition: ' + event.error;
     }
