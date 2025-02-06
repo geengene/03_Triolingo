@@ -20,6 +20,14 @@ const db = new pg.Client({
 });
 db.connect();
 
+db.query(
+  "CREATE TABLE IF NOT EXISTS settings (id SERIAL PRIMARY KEY, vocab_limit INTEGER, pronunciation_limit INTEGER );"
+);
+db.query(
+  "INSERT INTO settings (id, vocab_limit, pronunciation_limit) VALUES (1, $1, $2) ON CONFLICT (id) DO NOTHING",
+  [25, 25]
+);
+
 app.get("/", async (req, res) => {
   const settings = await db.query("SELECT * FROM settings");
   const vocabLimit = settings.rows[0].vocab_limit;
@@ -52,7 +60,6 @@ app.get("/populate", async (req, res) => {
         return res.status(500).send("Error executing script");
       }
       console.log(`stdout: ${stdout}`);
-      console.error(`stderr: ${stderr}`);
       res.redirect("/database");
     }
   );
@@ -126,6 +133,7 @@ app.get("/vocabulary", async (req, res) => {
       "SELECT * FROM vocabulary ORDER BY confidence ASC, RANDOM() LIMIT $1",
       [settings.rows[0].vocab_limit]
     );
+    // TODO: solve no words error when database is empty
     const currentIndex = 0;
     res.render("practiceVocab.ejs", { words: vocab.rows, currentIndex });
   } catch (err) {
@@ -153,6 +161,23 @@ app.post("/vocabulary/finish", async (req, res) => {
       res.redirect("/vocabulary");
     }
   } catch (err) {}
+});
+
+app.get("/pronunciation", async (req, res) => {
+  try {
+    const settings = await db.query("SELECT * FROM settings WHERE id = 1");
+    const vocab = await db.query(
+      "SELECT * FROM vocabulary ORDER BY confidence ASC, RANDOM() LIMIT $1",
+      [settings.rows[0].pronunciation_limit]
+    );
+    const currentIndex = 0;
+    res.render("practicePronunciation.ejs", {
+      words: vocab.rows,
+      currentIndex,
+    });
+  } catch (err) {
+    res.send("no words in database");
+  }
 });
 
 app.listen(port, () => {

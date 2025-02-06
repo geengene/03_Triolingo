@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/styles/practicePronunciation.css" />
+    <title>Pronunciation</title>
+  </head>
+  <body>
+    <div class="card">
+      <h1 id="wordText"><%= words[currentIndex].text %></h1>
+      <audio controls>
+        <!-- TODO: if no audiourl, use webspeech api -->
+        <source src="<%= words[currentIndex].audiourl %>" type="audio/mpeg" />
+      </audio>
+      <h2 id="textHolder">[...]</h2>
+      <h2 id="recordedInput">Input</h2>
+    </div>
+    <div class="buttons">
+      <button id="recordBtn">start recording</button>
+    </div>
+  </body>
+  <script>
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechGrammarList =
+      window.SpeechGrammarList || window.webkitSpeechGrammarList;
+    const SpeechRecognitionEvent =
+      window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent;
+    const vocab = <%- JSON.stringify(words) %>;
+    const recordedInput = document.getElementById("recordedInput")
+
+    words = []
+    vocab.forEach((word) => {
+      console.log(word.text);
+      words.push(word.text);
+    });
+    console.log(words)
+    var recognition = new SpeechRecognition();
+    if (SpeechGrammarList) {
+      var speechRecognitionList = new SpeechGrammarList();
+      const grammar = `#JSGF V1.0; grammar words; public <words> = ${words.join(
+        " | "
+      )};`;
+      speechRecognitionList.addFromString(grammar, 1);
+      recognition.grammars = speechRecognitionList;
+    }
+    recognition.continuous = false;
+    recognition.lang = 'ja-JP';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 2;
+
+    document.getElementById("recordBtn").onclick = function() {
+      recognition.start();
+      console.log('Ready to receive a color command.');
+    }
+    recognition.onresult = function(event) {
+      var input = event.results[0][0].transcript;
+      console.log(event.results)
+      recordedInput.textContent = 'Result received: ' + input + '.';
+      console.log('Confidence: ' + event.results[0][0].confidence);
+    }
+
+    recognition.onspeechend = function() {
+      recognition.stop();
+    }
+
+    recognition.onnomatch = function(event) {
+      recordedInput.textContent = "I didn't recognise that word.";
+    }
+
+    recognition.onerror = function(event) {
+      recordedInput.textContent = 'Error occurred in recognition: ' + event.error;
+    }
+  </script>
+</html>
