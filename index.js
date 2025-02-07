@@ -1,10 +1,16 @@
 import { exec } from "child_process";
+import axios from "axios";
 import express from "express";
 import pg from "pg";
 import env from "dotenv";
 
 const app = express();
 const port = 3000;
+const YOMI_API = "https://yomi.onrender.com/analyze";
+const headers = { "Content-Type": "application/x-www-form-urlencoded" };
+const data =
+  "text=日本は美しい国だ&mode=normal&to=romaji&romaji_system=hepburn";
+
 env.config();
 
 app.use(express.static("public"));
@@ -170,10 +176,27 @@ app.get("/pronunciation", async (req, res) => {
       "SELECT * FROM vocabulary ORDER BY confidence ASC, RANDOM() LIMIT $1",
       [settings.rows[0].pronunciation_limit]
     );
+    const romaji = await axios
+      .post(
+        YOMI_API,
+        `text=${vocab.rows
+          .map((row) => row.text)
+          .join(", ")}&mode=normal&to=romaji&romaji_system=hepburn`,
+        { headers }
+      )
+      .then((response) => {
+        // console.log(response.data);
+        return JSON.parse(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    console.log(romaji.converted);
     const currentIndex = 0;
     res.render("practicePronunciation.ejs", {
       words: vocab.rows,
-      currentIndex,
+      currentIndex: currentIndex,
+      romaji: romaji.converted,
     });
   } catch (err) {
     res.send("no words in database");

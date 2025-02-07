@@ -10,7 +10,7 @@
     <div class="card">
       <h1 id="wordText"><%= words[currentIndex].text %></h1>
       <audio controls>
-        <!-- TODO: if no audiourl, use webspeech api -->
+        <!-- TODO: if no audiourl, use webspeech api , add card system-->
         <source src="<%= words[currentIndex].audiourl %>" type="audio/mpeg" />
       </audio>
       <h2 id="textHolder">[...]</h2>
@@ -27,37 +27,36 @@
       window.SpeechGrammarList || window.webkitSpeechGrammarList;
     const SpeechRecognitionEvent =
       window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent;
+    let currentIndex = <%= currentIndex %>;
     const vocab = <%- JSON.stringify(words) %>;
     const recordedInput = document.getElementById("recordedInput")
-
-    words = []
+    const words = []
     vocab.forEach((word) => {
-      console.log(word.text);
       words.push(word.text);
     });
     console.log(words)
+
     var recognition = new SpeechRecognition();
     if (SpeechGrammarList) {
       var speechRecognitionList = new SpeechGrammarList();
-      const grammar = `#JSGF V1.0; grammar words; public <words> = ${words.join(
-        " | "
-      )};`;
+      var grammar = '#JSGF V1.0; grammar words; public <word> = ' + words.join(' | ') + ' ;'
       speechRecognitionList.addFromString(grammar, 1);
       recognition.grammars = speechRecognitionList;
     }
+    console.log(recognition.grammars)
     recognition.continuous = false;
     recognition.lang = 'ja-JP';
     recognition.interimResults = false;
-    recognition.maxAlternatives = 2;
+    recognition.maxAlternatives = 1;
 
     document.getElementById("recordBtn").onclick = function() {
       recognition.start();
       console.log('Ready to receive a color command.');
     }
 
+     //TODO: when result , after romanjinised, matches romaji of answer, return true, then display answer pronunciation, otherwise flase and display proninciation
     recognition.onresult = function(event) {
       var input = event.results[0][0].transcript;
-      console.log(event.results)
       recordedInput.textContent = 'Result received: ' + input + '.';
       console.log('Confidence: ' + event.results[0][0].confidence);
     }
