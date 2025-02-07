@@ -192,7 +192,7 @@ app.get("/pronunciation", async (req, res) => {
         return null;
       });
     const romajiArray = romaji.converted.split(",");
-    console.log(romajiArray);
+    // console.log(vocab.rows);
     const currentIndex = 0;
     res.render("practicePronunciation.ejs", {
       words: vocab.rows,
@@ -200,16 +200,16 @@ app.get("/pronunciation", async (req, res) => {
       romaji: romajiArray,
     });
   } catch (err) {
-    res.send("asdfasdf");
+    res.send("Error:", err);
   }
 });
 
-app.post("/pronunciation/check", async (req, res) => {
-  console.log(req.body);
+app.post("/pronunciation", async (req, res) => {
+  const form = req.body;
   const result = await axios
     .post(
       YOMI_API,
-      `text=${req.body}&mode=normal&to=romaji&romaji_system=hepburn`,
+      `text=${req.body.recordedInput}&mode=normal&to=romaji&romaji_system=hepburn`,
       { headers }
     )
     .then((response) => {
@@ -219,6 +219,20 @@ app.post("/pronunciation/check", async (req, res) => {
       console.error(error);
       return null;
     });
+  console.log(
+    result.converted,
+    form.recordedInput,
+    JSON.parse(form.wordsForm),
+    form.currentIndexForm,
+    form.romajiForm
+  );
+  // res.status(204).send();
+  res.render("practicePronunciation.ejs", {
+    words: JSON.parse(form.wordsForm),
+    currentIndex: form.currentIndexForm,
+    romaji: JSON.parse(form.romajiForm),
+    convertedInput: result.converted,
+  });
 });
 
 app.listen(port, () => {

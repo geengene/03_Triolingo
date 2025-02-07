@@ -15,7 +15,8 @@
       </audio>
       <h2 id="romajiText"><%= romaji[currentIndex] %></h2>
       <h2 id="textHolder">[...]</h2>
-      <form id="inputForm" method="post" action="/pronunciation/check">
+
+      <form id="inputForm" method="post" action="/pronunciation">
         <h2>Input:</h2>
         <input
           id="recordedInput"
@@ -23,6 +24,24 @@
           type="text"
           value=""
           readonly
+        />
+        <input
+          type="text"
+          name="wordsForm"
+          id="wordsForm"
+          value="<%= JSON.stringify(words) %>"
+        />
+        <input
+          type="text"
+          name="currentIndexForm"
+          id="currentIndexForm"
+          value="<%= currentIndex %>"
+        />
+        <input
+          type="text"
+          name="romajiForm"
+          id="romajiForm"
+          value="<%= JSON.stringify(romaji) %>"
         />
         <input id="submitBtn" hidden="true" type="submit" />
       </form>
@@ -75,11 +94,14 @@
       var input = event.results[0][0].transcript;
       recordedInput.value = input;
       console.log('Confidence: ' + event.results[0][0].confidence);
+
       currentIndex = (currentIndex + 1) % words.length;
       console.log(currentIndex)
-      document.getElementById("wordText").innerText = words[currentIndex].text
-      document.getElementById("audiourl").src = words[currentIndex].audiourl;
-      document.getElementById("romajiText").innerText = romaji[currentIndex]
+      //document.getElementById("wordText").innerText = words[currentIndex].text
+      //document.getElementById("audiourl").src = words[currentIndex].audiourl;
+      //document.getElementById("romajiText").innerText = romaji[currentIndex]
+      document.getElementById("currentIndexForm").value = currentIndex
+      submitBtn.click()
     }
     recognition.onspeechend = function() {
       recognition.stop();
