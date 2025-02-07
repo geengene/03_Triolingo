@@ -9,12 +9,23 @@
   <body>
     <div class="card">
       <h1 id="wordText"><%= words[currentIndex].text %></h1>
-      <audio controls>
+      <audio id="audiourl" controls>
         <!-- TODO: if no audiourl, use webspeech api , add card system-->
         <source src="<%= words[currentIndex].audiourl %>" type="audio/mpeg" />
       </audio>
+      <h2 id="romajiText"><%= romaji[currentIndex] %></h2>
       <h2 id="textHolder">[...]</h2>
-      <h2 id="recordedInput">Input</h2>
+      <form id="inputForm" method="post" action="/pronunciation/check">
+        <h2>Input:</h2>
+        <input
+          id="recordedInput"
+          name="recordedInput"
+          type="text"
+          value=""
+          readonly
+        />
+        <input id="submitBtn" hidden="true" type="submit" />
+      </form>
     </div>
     <div class="buttons">
       <button id="recordBtn">start recording</button>
@@ -28,18 +39,21 @@
     const SpeechRecognitionEvent =
       window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent;
     let currentIndex = <%= currentIndex %>;
-    const vocab = <%- JSON.stringify(words) %>;
-    const recordedInput = document.getElementById("recordedInput")
-    const words = []
-    vocab.forEach((word) => {
-      words.push(word.text);
+    const words = <%- JSON.stringify(words) %>;
+    console.log("words:", words)
+    const wordsArray = []
+    words.forEach((word) => {
+      wordsArray.push(word.text);
     });
-    console.log(words)
+    console.log("wordsArray:", wordsArray)
+    const romaji = <%- JSON.stringify(romaji) %>;
+    console.log("romaji:", romaji)
+
 
     var recognition = new SpeechRecognition();
     if (SpeechGrammarList) {
       var speechRecognitionList = new SpeechGrammarList();
-      var grammar = '#JSGF V1.0; grammar words; public <word> = ' + words.join(' | ') + ' ;'
+      var grammar = '#JSGF V1.0; grammar wordsArray; public <word> = ' + wordsArray.join(' | ') + ' ;'
       speechRecognitionList.addFromString(grammar, 1);
       recognition.grammars = speechRecognitionList;
     }
@@ -55,13 +69,21 @@
     }
 
      //TODO: when result , after romanjinised, matches romaji of answer, return true, then display answer pronunciation, otherwise flase and display proninciation
+    const recordedInput = document.getElementById("recordedInput")
+    const submitBtn = document.getElementById("submitBtn")
     recognition.onresult = function(event) {
       var input = event.results[0][0].transcript;
-      recordedInput.textContent = 'Result received: ' + input + '.';
+      recordedInput.value = input;
       console.log('Confidence: ' + event.results[0][0].confidence);
+      currentIndex = (currentIndex + 1) % words.length;
+      console.log(currentIndex)
+      document.getElementById("wordText").innerText = words[currentIndex].text
+      document.getElementById("audiourl").src = words[currentIndex].audiourl;
+      document.getElementById("romajiText").innerText = romaji[currentIndex]
     }
     recognition.onspeechend = function() {
       recognition.stop();
+
     }
     recognition.onnomatch = function(event) {
       recordedInput.textContent = "I didn't recognise that word.";

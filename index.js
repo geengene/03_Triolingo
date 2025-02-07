@@ -185,22 +185,40 @@ app.get("/pronunciation", async (req, res) => {
         { headers }
       )
       .then((response) => {
-        // console.log(response.data);
         return JSON.parse(response.data);
       })
       .catch((error) => {
         console.error(error);
+        return null;
       });
-    console.log(romaji.converted);
+    const romajiArray = romaji.converted.split(",");
+    console.log(romajiArray);
     const currentIndex = 0;
     res.render("practicePronunciation.ejs", {
       words: vocab.rows,
       currentIndex: currentIndex,
-      romaji: romaji.converted,
+      romaji: romajiArray,
     });
   } catch (err) {
-    res.send("no words in database");
+    res.send("asdfasdf");
   }
+});
+
+app.post("/pronunciation/check", async (req, res) => {
+  console.log(req.body);
+  const result = await axios
+    .post(
+      YOMI_API,
+      `text=${req.body}&mode=normal&to=romaji&romaji_system=hepburn`,
+      { headers }
+    )
+    .then((response) => {
+      return JSON.parse(response.data);
+    })
+    .catch((error) => {
+      console.error(error);
+      return null;
+    });
 });
 
 app.listen(port, () => {
