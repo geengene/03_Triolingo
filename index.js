@@ -174,22 +174,6 @@ app.get("/pronunciation", async (req, res) => {
       "SELECT * FROM vocabulary ORDER BY confidence ASC, RANDOM() LIMIT $1",
       [settings.rows[0].pronunciation_limit]
     );
-    // console.log(vocab.rows.map((row) => row.text).join(", "));
-    const romaji = await axios
-      .post(
-        YOMI_API,
-        `text=${vocab.rows
-          .map((row) => row.text)
-          .join(", ")}&mode=normal&to=romaji&romaji_system=hepburn`,
-        { headers }
-      )
-      .then((response) => {
-        return JSON.parse(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-        return null;
-      });
     const hiragana = await fetch(
       `https://jisho.org/api/v1/search/words?keyword=${vocab.rows[0].text}`,
       {
@@ -204,14 +188,14 @@ app.get("/pronunciation", async (req, res) => {
         return data.data[0].japanese[0].reading;
       })
       .catch((error) => console.error(error));
-    const romajiArray = romaji.converted.split(",");
     const currentIndex = 0;
     res.render("practicePronunciation.ejs", {
       words: vocab.rows,
       currentIndex: currentIndex,
-      romaji: romajiArray,
       convertedInput: hiragana,
       comparedInput: "",
+      result: "",
+      nextBtn: true,
     });
   } catch (err) {
     res.status(500);
@@ -220,7 +204,7 @@ app.get("/pronunciation", async (req, res) => {
 
 app.post("/pronunciation", async (req, res) => {
   const form = req.body;
-  const hiragana = await fetch(
+  var hiragana = await fetch(
     `https://jisho.org/api/v1/search/words?keyword=${form.recordedInput}`,
     {
       method: "GET",
@@ -234,6 +218,14 @@ app.post("/pronunciation", async (req, res) => {
       return data.data[0].japanese[0].reading;
     })
     .catch((error) => console.error(error));
+  if (hiragana == undefined) {
+    var yomiHiragana = await axios.post(
+      YOMI_API,
+      `text=${form.recordedInput}&mode=normal&to=hiragana&romaji_system=hepburn`,
+      headers
+    );
+    var hiragana = JSON.parse(yomiHiragana.data).converted;
+  }
   const hiragana2 = await fetch(
     `https://jisho.org/api/v1/search/words?keyword=${
       JSON.parse(form.wordsForm)[form.currentIndexForm].text
@@ -250,28 +242,29 @@ app.post("/pronunciation", async (req, res) => {
       return data.data[0].japanese[0].reading;
     })
     .catch((error) => console.error(error));
-  console.log(JSON.parse(form.wordsForm).length);
+
   if (hiragana === hiragana2) {
-    console.log("true");
-    form.currentIndexForm =
-      (form.currentIndexForm + 1) % JSON.parse(form.wordsForm).length;
+    var result = "True";
+    var nextBtn = "false";
   } else {
-    console.log("false");
+    var result = "False";
+    var nextBtn = "true";
   }
+
   console.log(
     hiragana,
     hiragana2,
     form.recordedInput,
-    // JSON.parse(form.wordsForm),
-    form.currentIndexForm,
-    form.romajiForm
+    parseInt(form.currentIndexForm)
   );
+
   res.render("practicePronunciation.ejs", {
     words: JSON.parse(form.wordsForm),
-    currentIndex: form.currentIndexForm,
-    romaji: JSON.parse(form.romajiForm),
+    currentIndex: parseInt(form.currentIndexForm),
     convertedInput: hiragana,
     comparedInput: hiragana2,
+    result: result,
+    nextBtn: nextBtn,
   });
 });
 

@@ -13,9 +13,11 @@
         <!-- TODO: if no audiourl, use webspeech api , add card system-->
         <source src="<%= words[currentIndex].audiourl %>" type="audio/mpeg" />
       </audio>
-      <h2 id="romajiText"><%= romaji[currentIndex] %></h2>
       <h2 id="textHolder">[...]</h2>
       <h2><%= convertedInput %></h2>
+      <h2><%= result %></h2>
+      <!-- TODO: next button will add currentIndex -->
+      <button hidden="<%= nextBtn %>">Next</button>
 
       <form id="inputForm" method="post" action="/pronunciation">
         <h2>Input:</h2>
@@ -31,18 +33,14 @@
           name="wordsForm"
           id="wordsForm"
           value="<%= JSON.stringify(words) %>"
+          hidden="true"
         />
         <input
           type="text"
           name="currentIndexForm"
           id="currentIndexForm"
           value="<%= currentIndex %>"
-        />
-        <input
-          type="text"
-          name="romajiForm"
-          id="romajiForm"
-          value="<%= JSON.stringify(romaji) %>"
+          hidden="true"
         />
         <input id="submitBtn" hidden="true" type="submit" />
       </form>
@@ -64,8 +62,6 @@
       wordsArray.push(word.text);
     });
     console.log("wordsArray:", wordsArray)
-    const romaji = <%- JSON.stringify(romaji) %>;
-    console.log("romaji:", romaji)
 
     const recognition = new SpeechRecognition();
     const SpeechGrammarList =
@@ -83,7 +79,7 @@
 
     document.getElementById("recordBtn").onclick = function() {
       recognition.start();
-      console.log('Ready to receive a color command.');
+      console.log('Ready to receive a command.');
     }
 
     const recordedInput = document.getElementById("recordedInput")
