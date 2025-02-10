@@ -171,7 +171,7 @@ app.get("/pronunciation", async (req, res) => {
   try {
     const settings = await db.query("SELECT * FROM settings WHERE id = 1");
     const vocab = await db.query(
-      "SELECT * FROM vocabulary ORDER BY confidence ASC, RANDOM() LIMIT $1",
+      "SELECT * FROM vocabulary WHERE LENGTH(text) > 1 ORDER BY confidence ASC, RANDOM() LIMIT $1",
       [settings.rows[0].pronunciation_limit]
     );
     const hiragana = await fetch(
@@ -195,7 +195,6 @@ app.get("/pronunciation", async (req, res) => {
       convertedInput: hiragana,
       comparedInput: "",
       result: "",
-      nextBtn: true,
     });
   } catch (err) {
     res.status(500);
@@ -204,6 +203,18 @@ app.get("/pronunciation", async (req, res) => {
 
 app.post("/pronunciation", async (req, res) => {
   const form = req.body;
+  function calculateSimilarity(str1, str2) {
+    let matchingChars = 0;
+    const longerString = str1.length > str2.length ? str1 : str2;
+    const shorterString = str1.length > str2.length ? str2 : str1;
+
+    for (let i = 0; i < shorterString.length; i++) {
+      if (shorterString[i] === longerString[i]) {
+        matchingChars++;
+      }
+    }
+    return matchingChars / longerString.length;
+  }
   var hiragana = await fetch(
     `https://jisho.org/api/v1/search/words?keyword=${form.recordedInput}`,
     {
@@ -226,7 +237,8 @@ app.post("/pronunciation", async (req, res) => {
     );
     var hiragana = JSON.parse(yomiHiragana.data).converted;
   }
-  const hiragana2 = await fetch(
+
+  var hiragana2 = await fetch(
     `https://jisho.org/api/v1/search/words?keyword=${
       JSON.parse(form.wordsForm)[form.currentIndexForm].text
     }`,
@@ -242,13 +254,39 @@ app.post("/pronunciation", async (req, res) => {
       return data.data[0].japanese[0].reading;
     })
     .catch((error) => console.error(error));
-
-  if (hiragana === hiragana2) {
+  if (hiragana2 == undefined) {
+    var yomiHiragana = await axios.post(
+      YOMI_API,
+      `text=${
+        JSON.parse(form.wordsForm)[form.currentIndexForm].text
+      }&mode=normal&to=hiragana&romaji_system=hepburn`,
+      headers
+    );
+    var hiragana2 = JSON.parse(wordHiragana.data).converted;
+  }
+  // const hiragana2 = await fetch(
+  //   `https://jisho.org/api/v1/search/words?keyword=${
+  //     JSON.parse(form.wordsForm)[form.currentIndexForm].text
+  //   }`,
+  //   {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   }
+  // )
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     return data.data[0].japanese[0].reading;
+  //   })
+  //   .catch((error) => console.error(error));
+  console.log(calculateSimilarity(hiragana, hiragana2));
+  if (calculateSimilarity(hiragana, hiragana2) >= 0.5) {
     var result = "True";
-    var nextBtn = "false";
+    form.currentIndexForm =
+      (parseInt(form.currentIndexForm) + 1) % JSON.parse(form.wordsForm).length;
   } else {
     var result = "False";
-    var nextBtn = "true";
   }
 
   console.log(
@@ -263,8 +301,8 @@ app.post("/pronunciation", async (req, res) => {
     currentIndex: parseInt(form.currentIndexForm),
     convertedInput: hiragana,
     comparedInput: hiragana2,
-    result: result,
-    nextBtn: nextBtn,
+    result,
+    result,
   });
 });
 

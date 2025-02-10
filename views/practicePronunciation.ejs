@@ -17,7 +17,6 @@
       <h2><%= convertedInput %></h2>
       <h2><%= result %></h2>
       <!-- TODO: next button will add currentIndex -->
-      <button hidden="<%= nextBtn %>">Next</button>
 
       <form id="inputForm" method="post" action="/pronunciation">
         <h2>Input:</h2>
@@ -33,7 +32,6 @@
           name="wordsForm"
           id="wordsForm"
           value="<%= JSON.stringify(words) %>"
-          hidden="true"
         />
         <input
           type="text"
