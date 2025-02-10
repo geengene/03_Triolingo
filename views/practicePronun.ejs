@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/styles/practicePronunciation.css" />
+    <link rel="stylesheet" href="/styles/practicePronun.css" />
     <title>Pronunciation</title>
   </head>
   <body>
@@ -13,11 +13,12 @@
         <!-- TODO: if no audiourl, use webspeech api , add card system-->
         <source src="<%= words[currentIndex].audiourl %>" type="audio/mpeg" />
       </audio>
-      <h2 id="textHolder">[...]</h2>
-      <h2><%= convertedInput %></h2>
-      <h2><%= result %></h2>
-      <!-- TODO: next button will add currentIndex -->
-
+      <h2 id="convertedInput"><%= convertedInput %></h2>
+      <% if (nextBtn === true) { %>
+      <button id="nextBtn">Next</button>
+      <% } else { %>
+      <button id="nextBtn" hidden>Next</button>
+      <% } %>
       <form id="inputForm" method="post" action="/pronunciation">
         <h2>Input:</h2>
         <input
@@ -32,6 +33,7 @@
           name="wordsForm"
           id="wordsForm"
           value="<%= JSON.stringify(words) %>"
+          hidden
         />
         <input
           type="text"
@@ -89,7 +91,16 @@
       console.log('Confidence: ' + event.results[0][0].confidence);
       document.getElementById("currentIndexForm").value = currentIndex
       submitBtn.click();
-      }
+    }
+
+    document.getElementById("nextBtn").onclick = function () {
+      currentIndex = currentIndex + 1
+      document.getElementById("currentIndexForm").value = currentIndex
+      document.getElementById("wordText").innerText = words[currentIndex].text
+      document.getElementById("audiourl").src = words[currentIndex].audiourl
+      document.getElementById("convertedInput").innerText = ""
+      document.getElementById('nextBtn').classList.add("hidden")
+    }
 
     recognition.onspeechend = function() {
       recognition.stop();

@@ -32,6 +32,18 @@ db.query(
   [25, 25]
 );
 
+function calculateSimilarity(str1, str2) {
+  let matchingChars = 0;
+  const longerString = str1.length > str2.length ? str1 : str2;
+  const shorterString = str1.length > str2.length ? str2 : str1;
+
+  for (let i = 0; i < shorterString.length; i++) {
+    if (shorterString[i] === longerString[i]) {
+      matchingChars++;
+    }
+  }
+  return matchingChars / longerString.length;
+}
 app.get("/", async (req, res) => {
   const settings = await db.query("SELECT * FROM settings");
   const vocabLimit = settings.rows[0].vocab_limit;
@@ -174,27 +186,27 @@ app.get("/pronunciation", async (req, res) => {
       "SELECT * FROM vocabulary WHERE LENGTH(text) > 1 ORDER BY confidence ASC, RANDOM() LIMIT $1",
       [settings.rows[0].pronunciation_limit]
     );
-    const hiragana = await fetch(
-      `https://jisho.org/api/v1/search/words?keyword=${vocab.rows[0].text}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        return data.data[0].japanese[0].reading;
-      })
-      .catch((error) => console.error(error));
+    // const hiragana = await fetch(
+    //   `https://jisho.org/api/v1/search/words?keyword=${vocab.rows[0].text}`,
+    //   {
+    //     method: "GET",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //   }
+    // )
+    //   .then((response) => response.json())
+    //   .then((data) => {
+    //     return data.data[0].japanese[0].reading;
+    //   })
+    //   .catch((error) => console.error(error));
     const currentIndex = 0;
-    res.render("practicePronunciation.ejs", {
+    res.render("practicePronun.ejs", {
       words: vocab.rows,
       currentIndex: currentIndex,
-      convertedInput: hiragana,
+      convertedInput: "",
       comparedInput: "",
-      result: "",
+      nextBtn: false,
     });
   } catch (err) {
     res.status(500);
@@ -203,18 +215,6 @@ app.get("/pronunciation", async (req, res) => {
 
 app.post("/pronunciation", async (req, res) => {
   const form = req.body;
-  function calculateSimilarity(str1, str2) {
-    let matchingChars = 0;
-    const longerString = str1.length > str2.length ? str1 : str2;
-    const shorterString = str1.length > str2.length ? str2 : str1;
-
-    for (let i = 0; i < shorterString.length; i++) {
-      if (shorterString[i] === longerString[i]) {
-        matchingChars++;
-      }
-    }
-    return matchingChars / longerString.length;
-  }
   var hiragana = await fetch(
     `https://jisho.org/api/v1/search/words?keyword=${form.recordedInput}`,
     {
@@ -262,31 +262,15 @@ app.post("/pronunciation", async (req, res) => {
       }&mode=normal&to=hiragana&romaji_system=hepburn`,
       headers
     );
-    var hiragana2 = JSON.parse(wordHiragana.data).converted;
+    var hiragana2 = JSON.parse(yomiHiragana.data).converted;
   }
-  // const hiragana2 = await fetch(
-  //   `https://jisho.org/api/v1/search/words?keyword=${
-  //     JSON.parse(form.wordsForm)[form.currentIndexForm].text
-  //   }`,
-  //   {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   }
-  // )
-  //   .then((response) => response.json())
-  //   .then((data) => {
-  //     return data.data[0].japanese[0].reading;
-  //   })
-  //   .catch((error) => console.error(error));
   console.log(calculateSimilarity(hiragana, hiragana2));
   if (calculateSimilarity(hiragana, hiragana2) >= 0.5) {
-    var result = "True";
-    form.currentIndexForm =
-      (parseInt(form.currentIndexForm) + 1) % JSON.parse(form.wordsForm).length;
+    // form.currentIndexForm =
+    //   (parseInt(form.currentIndexForm) + 1) % JSON.parse(form.wordsForm).length;
+    var nextBtn = true;
   } else {
-    var result = "False";
+    var nextBtn = false;
   }
 
   console.log(
@@ -296,13 +280,12 @@ app.post("/pronunciation", async (req, res) => {
     parseInt(form.currentIndexForm)
   );
 
-  res.render("practicePronunciation.ejs", {
+  res.render("practicePronun.ejs", {
     words: JSON.parse(form.wordsForm),
     currentIndex: parseInt(form.currentIndexForm),
     convertedInput: hiragana,
     comparedInput: hiragana2,
-    result,
-    result,
+    nextBtn: nextBtn,
   });
 });
 
