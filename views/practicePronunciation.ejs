@@ -15,6 +15,7 @@
       </audio>
       <h2 id="romajiText"><%= romaji[currentIndex] %></h2>
       <h2 id="textHolder">[...]</h2>
+      <h2><%= convertedInput %></h2>
 
       <form id="inputForm" method="post" action="/pronunciation">
         <h2>Input:</h2>
@@ -53,8 +54,6 @@
   <script>
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
-    const SpeechGrammarList =
-      window.SpeechGrammarList || window.webkitSpeechGrammarList;
     const SpeechRecognitionEvent =
       window.SpeechRecognitionEvent || window.webkitSpeechRecognitionEvent;
     let currentIndex = <%= currentIndex %>;
@@ -68,44 +67,38 @@
     const romaji = <%- JSON.stringify(romaji) %>;
     console.log("romaji:", romaji)
 
-
-    var recognition = new SpeechRecognition();
+    const recognition = new SpeechRecognition();
+    const SpeechGrammarList =
+      window.SpeechGrammarList || window.webkitSpeechGrammarList;
     if (SpeechGrammarList) {
-      var speechRecognitionList = new SpeechGrammarList();
-      var grammar = '#JSGF V1.0; grammar wordsArray; public <word> = ' + wordsArray.join(' | ') + ' ;'
+      const speechRecognitionList = new SpeechGrammarList();
+      const grammar = '#JSGF V1.0; grammar wordsArray; public <word> = ' + wordsArray.join(' | ') + ' ;'
       speechRecognitionList.addFromString(grammar, 1);
       recognition.grammars = speechRecognitionList;
     }
-    console.log(recognition.grammars)
     recognition.continuous = false;
     recognition.lang = 'ja-JP';
     recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
+    recognition.maxAlternatives = 0;
 
     document.getElementById("recordBtn").onclick = function() {
       recognition.start();
       console.log('Ready to receive a color command.');
     }
 
-     //TODO: when result , after romanjinised, matches romaji of answer, return true, then display answer pronunciation, otherwise flase and display proninciation
     const recordedInput = document.getElementById("recordedInput")
     const submitBtn = document.getElementById("submitBtn")
-    recognition.onresult = function(event) {
+
+    recognition.onresult = async function(event) {
       var input = event.results[0][0].transcript;
       recordedInput.value = input;
       console.log('Confidence: ' + event.results[0][0].confidence);
-
-      currentIndex = (currentIndex + 1) % words.length;
-      console.log(currentIndex)
-      //document.getElementById("wordText").innerText = words[currentIndex].text
-      //document.getElementById("audiourl").src = words[currentIndex].audiourl;
-      //document.getElementById("romajiText").innerText = romaji[currentIndex]
       document.getElementById("currentIndexForm").value = currentIndex
-      submitBtn.click()
-    }
+      submitBtn.click();
+      }
+
     recognition.onspeechend = function() {
       recognition.stop();
-
     }
     recognition.onnomatch = function(event) {
       recordedInput.textContent = "I didn't recognise that word.";
