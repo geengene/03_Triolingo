@@ -186,27 +186,24 @@ app.get("/pronunciation", async (req, res) => {
       "SELECT * FROM vocabulary WHERE LENGTH(text) > 1 ORDER BY confidence ASC, RANDOM() LIMIT $1",
       [settings.rows[0].pronunciation_limit]
     );
-    // const hiragana = await fetch(
-    //   `https://jisho.org/api/v1/search/words?keyword=${vocab.rows[0].text}`,
-    //   {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   }
-    // )
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     return data.data[0].japanese[0].reading;
-    //   })
-    //   .catch((error) => console.error(error));
+    const words = vocab.rows;
+    const wordsArray = [];
+    words.forEach((word) => {
+      wordsArray.push(word.text);
+    });
+    var yomiArray = await axios.post(
+      YOMI_API,
+      `text=${wordsArray}&mode=normal&to=romaji&romaji_system=hepburn`,
+      headers
+    );
+    var romajiArray = JSON.parse(yomiArray.data).converted;
     const currentIndex = 0;
     res.render("practicePronun.ejs", {
-      words: vocab.rows,
+      words: words,
+      wordsArray: wordsArray,
       currentIndex: currentIndex,
-      convertedInput: "",
-      comparedInput: "",
       nextBtn: false,
+      romajiArray: romajiArray,
     });
   } catch (err) {
     res.status(500);
@@ -215,6 +212,7 @@ app.get("/pronunciation", async (req, res) => {
 
 app.post("/pronunciation", async (req, res) => {
   const form = req.body;
+  console.log(form.wordsArrayForm);
   var hiragana = await fetch(
     `https://jisho.org/api/v1/search/words?keyword=${form.recordedInput}`,
     {
@@ -266,8 +264,6 @@ app.post("/pronunciation", async (req, res) => {
   }
   console.log(calculateSimilarity(hiragana, hiragana2));
   if (calculateSimilarity(hiragana, hiragana2) >= 0.5) {
-    // form.currentIndexForm =
-    //   (parseInt(form.currentIndexForm) + 1) % JSON.parse(form.wordsForm).length;
     var nextBtn = true;
   } else {
     var nextBtn = false;
@@ -283,9 +279,8 @@ app.post("/pronunciation", async (req, res) => {
   res.render("practicePronun.ejs", {
     words: JSON.parse(form.wordsForm),
     currentIndex: parseInt(form.currentIndexForm),
-    convertedInput: hiragana,
-    comparedInput: hiragana2,
     nextBtn: nextBtn,
+    romajiArray: form.romajiArrayForm,
   });
 });
 

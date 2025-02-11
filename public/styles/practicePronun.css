@@ -1,4 +1,43 @@
-/* TODO: stylise pronunciation */
+body {
+  margin: 0;
+  padding: 0;
+  height: 70vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.card {
+  border-style: solid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.buttons button {
+  background: #fbca1f;
+  font-family: inherit;
+  padding: 10px 20px;
+  font-weight: 900;
+  font-size: 16px;
+  border: 3px solid black;
+  border-radius: 0.4rem;
+  box-shadow: 0.1rem 0.1rem;
+  cursor: pointer;
+}
+.buttons button:hover {
+  transform: translate(-0.05em, -0.05em);
+  box-shadow: 0.15em 0.15em;
+}
+.buttons button:active {
+  transform: translate(0.05em, 0.05em);
+  box-shadow: 0.05em 0.05em;
+}
+
+#inputForm {
+  display: flex;
+}
 .hidden {
   display: none;
 }

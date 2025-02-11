@@ -9,16 +9,17 @@
   <body>
     <div class="card">
       <h1 id="wordText"><%= words[currentIndex].text %></h1>
+
+      <label for="voiceSelect">Select Voice:</label>
+      <select id="voiceSelect"></select>
+      <br /><br />
+      <button id="playBtn">Play</button>
+
       <audio id="audiourl" controls>
-        <!-- TODO: if no audiourl, use webspeech api , add card system-->
         <source src="<%= words[currentIndex].audiourl %>" type="audio/mpeg" />
       </audio>
-      <h2 id="convertedInput"><%= convertedInput %></h2>
-      <% if (nextBtn === true) { %>
-      <button id="nextBtn">Next</button>
-      <% } else { %>
-      <button id="nextBtn" hidden>Next</button>
-      <% } %>
+      <!-- TODO: implement speech synthesis -->
+      <h2 id="romaji"><%= romajiArray.split(',')[currentIndex] %></h2>
       <form id="inputForm" method="post" action="/pronunciation">
         <h2>Input:</h2>
         <input
@@ -37,18 +38,38 @@
         />
         <input
           type="text"
+          name="romajiArrayForm"
+          id="romajiArrayForm"
+          value="<%= romajiArray %>"
+          hidden
+        />
+        <input
+          type="text"
           name="currentIndexForm"
           id="currentIndexForm"
           value="<%= currentIndex %>"
-          hidden="true"
+          hidden
+        />
+        <input
+          type="text"
+          name="wordsArrayForm"
+          id="wordsArrayForm"
+          value=""
+          hidden
         />
         <input id="submitBtn" hidden="true" type="submit" />
       </form>
     </div>
     <div class="buttons">
       <button id="recordBtn">start recording</button>
+      <% if (nextBtn === true) { %>
+      <button id="nextBtn">Next</button>
+      <% } else { %>
+      <button id="nextBtn" hidden>Next</button>
+      <% } %>
     </div>
   </body>
+
   <script>
     const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -62,6 +83,7 @@
       wordsArray.push(word.text);
     });
     console.log("wordsArray:", wordsArray)
+    const romajiArray = "<%= romajiArray %>"
 
     const recognition = new SpeechRecognition();
     const SpeechGrammarList =
@@ -90,6 +112,7 @@
       recordedInput.value = input;
       console.log('Confidence: ' + event.results[0][0].confidence);
       document.getElementById("currentIndexForm").value = currentIndex
+      document.getElementById("wordsArrayForm").value = wordsArray
       submitBtn.click();
     }
 
@@ -98,7 +121,7 @@
       document.getElementById("currentIndexForm").value = currentIndex
       document.getElementById("wordText").innerText = words[currentIndex].text
       document.getElementById("audiourl").src = words[currentIndex].audiourl
-      document.getElementById("convertedInput").innerText = ""
+      document.getElementById("romaji").innerText = romajiArray.split(',')[currentIndex]
       document.getElementById('nextBtn').classList.add("hidden")
     }
 
@@ -111,5 +134,43 @@
     recognition.onerror = function(event) {
       recordedInput.textContent = 'Error occurred in recognition: ' + event.error;
     }
+
+    const textInput = document.getElementById("wordText");
+    const voiceSelect = document.getElementById("voiceSelect");
+    const playBtn = document.getElementById("playBtn");
+    let voices = [];
+
+    function populateVoices() {
+        voices = speechSynthesis.getVoices();
+        voiceSelect.innerHTML = ""; // Clear previous options
+
+        // Filter voices by language (Change 'en' to your target language code)
+        const lang = "ja";
+        const filteredVoices = voices.filter(voice => voice.lang.startsWith(lang));
+
+        filteredVoices.forEach(voice => {
+            const option = document.createElement("option");
+            option.value = voice.name;
+            option.textContent = `${voice.name} (${voice.lang})`;
+            voiceSelect.appendChild(option);
+        });
+    }
+
+    // Populate voices when they change
+    speechSynthesis.onvoiceschanged = populateVoices;
+
+    playBtn.addEventListener("click", () => {
+        const text = textInput.innerText;
+        const utterance = new SpeechSynthesisUtterance(text);
+
+        // Set selected voice
+        const selectedVoice = voiceSelect.value;
+        utterance.voice = voices.find(voice => voice.name === selectedVoice);
+
+        speechSynthesis.speak(utterance);
+    });
+
+    // Initial voice population
+    populateVoices();
   </script>
 </html>
