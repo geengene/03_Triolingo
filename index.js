@@ -32,33 +32,50 @@ db.query(
   [25, 25]
 );
 
-function calculateSimilarity(str1, str2) {
-  let matchingChars = 0;
-  const longerString = str1.length > str2.length ? str1 : str2;
-  const shorterString = str1.length > str2.length ? str2 : str1;
+function similarityPercentage(word1, word2) {
+  if (!word1 || !word2) return 0;
 
-  for (let i = 0; i < shorterString.length; i++) {
-    if (shorterString[i] === longerString[i]) {
-      matchingChars++;
+  // Convert words to lowercase and split into character arrays
+  const arr1 = word1.toLowerCase().split("");
+  const arr2 = word2.toLowerCase().split("");
+
+  let matchCount = 0;
+  const charMap = {};
+
+  // Count characters in word1
+  for (let char of arr1) {
+    charMap[char] = (charMap[char] || 0) + 1;
+  }
+
+  // Count matching characters in word2
+  for (let char of arr2) {
+    if (charMap[char] && charMap[char] > 0) {
+      matchCount++;
+      charMap[char]--;
     }
   }
-  return matchingChars / longerString.length;
+
+  // Calculate percentage similarity
+  const maxLength = Math.max(word1.length, word2.length);
+  return (matchCount / maxLength) * 100;
 }
+
 app.get("/", async (req, res) => {
   const settings = await db.query("SELECT * FROM settings");
   const vocabLimit = settings.rows[0].vocab_limit;
-  res.render("main.ejs", { vocabLimit });
+  const pronunLimit = settings.rows[0].pronunciation_limit;
+  res.render("main.ejs", { vocabLimit, pronunLimit });
 });
 
 app.post("/settings", async (req, res) => {
   try {
-    const { vocab_limit } = req.body;
+    const { vocab_limit, pronun_limit } = req.body;
     await db.query(
-      "CREATE TABLE IF NOT EXISTS settings (id SERIAL PRIMARY KEY, vocab_limit INTEGER );"
+      "CREATE TABLE IF NOT EXISTS settings (id SERIAL PRIMARY KEY, vocab_limit INTEGER, pronunciation_limit INTEGER );"
     );
     await db.query(
-      "INSERT INTO settings (id, vocab_limit) VALUES (1, $1) ON CONFLICT (id) DO UPDATE SET vocab_limit = EXCLUDED.vocab_limit;",
-      [vocab_limit]
+      "INSERT INTO settings (id, vocab_limit, pronunciation_limit) VALUES (1, $1, $2) ON CONFLICT (id) DO UPDATE SET vocab_limit = EXCLUDED.vocab_limit, pronunciation_limit = EXCLUDED.pronunciation_limit;",
+      [vocab_limit, pronun_limit]
     );
     res.redirect("/");
   } catch (err) {
@@ -89,9 +106,11 @@ app.get("/database", async (req, res) => {
     const vocab = await db.query("SELECT * FROM vocabulary ORDER BY id ASC");
     const settings = await db.query("SELECT * FROM settings");
     const vocabLimit = settings.rows[0].vocab_limit;
+    const pronunLimit = settings.rows[0].pronunciation_limit;
     res.render("database.ejs", {
       words: vocab.rows,
       vocabLimit: vocabLimit,
+      pronunLimit: pronunLimit,
     });
   } catch (err) {
     res.send("no words in database");
@@ -202,7 +221,7 @@ app.get("/pronunciation", async (req, res) => {
       words: words,
       wordsArray: wordsArray,
       currentIndex: currentIndex,
-      nextBtn: false,
+      nextBtn: 0,
       romajiArray: romajiArray,
     });
   } catch (err) {
@@ -210,63 +229,64 @@ app.get("/pronunciation", async (req, res) => {
   }
 });
 
+var nextBtn = 0;
 app.post("/pronunciation", async (req, res) => {
   const form = req.body;
   console.log(form.wordsArrayForm);
-  var hiragana = await fetch(
-    `https://jisho.org/api/v1/search/words?keyword=${form.recordedInput}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      return data.data[0].japanese[0].reading;
-    })
-    .catch((error) => console.error(error));
-  if (hiragana == undefined) {
-    var yomiHiragana = await axios.post(
-      YOMI_API,
-      `text=${form.recordedInput}&mode=normal&to=hiragana&romaji_system=hepburn`,
-      headers
-    );
-    var hiragana = JSON.parse(yomiHiragana.data).converted;
-  }
+  // var hiragana = await fetch(
+  //   `https://jisho.org/api/v1/search/words?keyword=${form.recordedInput}`,
+  //   {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   }
+  // )
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     return data.data[0].japanese[0].reading;
+  //   })
+  //   .catch((error) => console.error(error));
+  // if (hiragana == undefined) {
+  var yomiHiragana1 = await axios.post(
+    YOMI_API,
+    `text=${form.recordedInput}&mode=normal&to=romaji&romaji_system=hepburn`,
+    headers
+  );
+  var hiragana = JSON.parse(yomiHiragana1.data).converted;
+  // }
 
-  var hiragana2 = await fetch(
-    `https://jisho.org/api/v1/search/words?keyword=${
+  // var hiragana2 = await fetch(
+  //   `https://jisho.org/api/v1/search/words?keyword=${
+  //     JSON.parse(form.wordsForm)[form.currentIndexForm].text
+  //   }`,
+  //   {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   }
+  // )
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     return data.data[0].japanese[0].reading;
+  //   })
+  //   .catch((error) => console.error(error));
+  // if (hiragana2 == undefined) {
+  var yomiHiragana2 = await axios.post(
+    YOMI_API,
+    `text=${
       JSON.parse(form.wordsForm)[form.currentIndexForm].text
-    }`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      return data.data[0].japanese[0].reading;
-    })
-    .catch((error) => console.error(error));
-  if (hiragana2 == undefined) {
-    var yomiHiragana = await axios.post(
-      YOMI_API,
-      `text=${
-        JSON.parse(form.wordsForm)[form.currentIndexForm].text
-      }&mode=normal&to=hiragana&romaji_system=hepburn`,
-      headers
-    );
-    var hiragana2 = JSON.parse(yomiHiragana.data).converted;
-  }
-  console.log(calculateSimilarity(hiragana, hiragana2));
-  if (calculateSimilarity(hiragana, hiragana2) >= 0.5) {
-    var nextBtn = true;
+    }&mode=normal&to=romaji&romaji_system=hepburn`,
+    headers
+  );
+  var hiragana2 = JSON.parse(yomiHiragana2.data).converted;
+  // }
+  console.log(similarityPercentage(hiragana, hiragana2));
+  if (similarityPercentage(hiragana, hiragana2) >= 50) {
+    nextBtn = 3;
   } else {
-    var nextBtn = false;
+    nextBtn = (nextBtn + 1) % 4;
   }
 
   console.log(
@@ -282,6 +302,16 @@ app.post("/pronunciation", async (req, res) => {
     nextBtn: nextBtn,
     romajiArray: form.romajiArrayForm,
   });
+});
+
+app.post("/pronunciation/finish", async (req, res) => {
+  try {
+    if (req.body.modalButton === "exitModal") {
+      res.redirect("/");
+    } else if (req.body.modalButton === "anotherModal") {
+      res.redirect("/pronunciation");
+    }
+  } catch (err) {}
 });
 
 app.listen(port, () => {
