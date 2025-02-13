@@ -202,7 +202,7 @@ app.get("/pronunciation", async (req, res) => {
   try {
     const settings = await db.query("SELECT * FROM settings WHERE id = 1");
     const vocab = await db.query(
-      "SELECT * FROM vocabulary WHERE LENGTH(text) > 1 ORDER BY confidence ASC, RANDOM() LIMIT $1",
+      "SELECT * FROM vocabulary WHERE LENGTH(text) > 2 ORDER BY confidence ASC, RANDOM() LIMIT $1",
       [settings.rows[0].pronunciation_limit]
     );
     const words = vocab.rows;
@@ -224,6 +224,7 @@ app.get("/pronunciation", async (req, res) => {
       tryCount: -1,
       check: true,
       romajiArray: romajiArray,
+      hiragana: "",
     });
   } catch (err) {
     res.status(500);
@@ -239,6 +240,7 @@ app.post("/pronunciation", async (req, res) => {
     headers
   );
   var hiragana = JSON.parse(yomiHiragana1.data).converted;
+
   var yomiHiragana2 = await axios.post(
     YOMI_API,
     `text=${
@@ -247,7 +249,7 @@ app.post("/pronunciation", async (req, res) => {
     headers
   );
   var hiragana2 = JSON.parse(yomiHiragana2.data).converted;
-  // }
+
   console.log(similarityPercentage(hiragana, hiragana2));
   if (similarityPercentage(hiragana, hiragana2) > 50) {
     tryCount = 2;
@@ -271,6 +273,7 @@ app.post("/pronunciation", async (req, res) => {
     romajiArray: form.romajiArrayForm,
     check: check,
     tryCount: tryCount,
+    hiragana: hiragana,
   });
 });
 

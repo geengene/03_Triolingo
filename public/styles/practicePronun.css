@@ -1,8 +1,24 @@
 body {
   margin: 0;
   padding: 0;
-  height: 80vh;
+  height: 100vh;
   width: 100%;
+}
+.homeBtn {
+  display: flex;
+  justify-content: flex-end;
+}
+#home {
+  margin-right: 5px;
+  margin-top: 5px;
+  height: 3rem;
+  width: 4rem;
+}
+#home:hover {
+  cursor: pointer;
+}
+.mainContent {
+  margin-top: 20vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -38,6 +54,11 @@ body {
 }
 #wordText {
   font-size: 3rem;
+  margin: 0;
+}
+#wordTranslation {
+  font-size: 1rem;
+  margin: 0;
 }
 #nextReveal {
   display: flex;
@@ -45,9 +66,27 @@ body {
   align-items: center;
   justify-content: center;
 }
+#nextRevealHolder {
+  height: 17vh;
+  width: 50px;
+  color: #fbca1f;
+}
 
 #inputForm {
   display: flex;
+  margin: 2rem;
+  align-items: center;
+  justify-content: center;
+}
+#recordedInput {
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid;
+  padding: 5px;
+  box-shadow: none;
+  font-size: 1.5rem;
+  text-align: center;
+  width: 60%;
 }
 .hidden {
   display: none;

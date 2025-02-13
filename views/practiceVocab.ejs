@@ -4,63 +4,76 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/styles/practiceVocab.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&text=home"
+      rel="stylesheet"
+    />
     <title>Practice Vocabulary</title>
   </head>
   <body>
-    <div class="card">
-      <h1 id="wordText"><%= words[currentIndex].text %></h1>
-      <h2 class="hidden" id="wordTranslation">
-        <%= words[currentIndex].translation %>
-      </h2>
-      <h2 id="textHolder">[...]</h2>
+    <div class="homeBtn">
+      <a href="/" style="text-decoration: none">
+        <button id="home">
+          <span class="material-symbols-outlined"> home </span>
+        </button>
+      </a>
     </div>
-    <div class="buttons">
-      <button class="Space diffButton" id="show">Show Answer</button>
-      <form action="/vocabulary" method="POST">
-        <input
-          hidden="true"
-          name="wordId"
-          id="wordId"
-          type="text"
-          value="<%= words[currentIndex].id %>"
-        />
-        <button
-          class="Digit1 diffButton hidden"
-          id="easy"
-          name="confidence"
-          type="submit"
-          value="3"
-        >
-          Easy
-        </button>
-        <button
-          class="Digit2 diffButton hidden"
-          id="medium"
-          name="confidence"
-          type="submit"
-          value="2"
-        >
-          Medium
-        </button>
-        <button
-          class="Digit3 diffButton hidden"
-          id="hard"
-          name="confidence"
-          type="submit"
-          value="1"
-        >
-          Hard
-        </button>
-        <button
-          class="Digit4 diffButton hidden"
-          id="again"
-          name="confidence"
-          type="submit"
-          value="-1"
-        >
-          Again
-        </button>
-      </form>
+    <div class="mainContent">
+      <div class="card">
+        <h1 id="wordText"><%= words[currentIndex].text %></h1>
+        <h2 class="hidden" id="wordTranslation">
+          <%= words[currentIndex].translation %>
+        </h2>
+        <h2 id="textHolder">[...]</h2>
+      </div>
+      <div class="buttons">
+        <button class="Space diffButton" id="show">Show Answer</button>
+        <form action="/vocabulary" method="POST">
+          <input
+            hidden="true"
+            name="wordId"
+            id="wordId"
+            type="text"
+            value="<%= words[currentIndex].id %>"
+          />
+          <button
+            class="Digit1 diffButton hidden"
+            id="easy"
+            name="confidence"
+            type="submit"
+            value="3"
+          >
+            Easy
+          </button>
+          <button
+            class="Digit2 diffButton hidden"
+            id="medium"
+            name="confidence"
+            type="submit"
+            value="2"
+          >
+            Medium
+          </button>
+          <button
+            class="Digit3 diffButton hidden"
+            id="hard"
+            name="confidence"
+            type="submit"
+            value="1"
+          >
+            Hard
+          </button>
+          <button
+            class="Digit4 diffButton hidden"
+            id="again"
+            name="confidence"
+            type="submit"
+            value="-1"
+          >
+            Again
+          </button>
+        </form>
+      </div>
     </div>
     <div id="modalBackground" class="modalBackground">
       <div class="modalContent">

@@ -4,104 +4,125 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&text=mic,arrow_forward"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&text=mic,arrow_forward,play_arrow,home"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/styles/practicePronun.css" />
     <title>Pronunciation</title>
   </head>
   <body>
-    <div class="card">
-      <h1 id="wordText"><%= words[currentIndex].text %></h1>
+    <div class="homeBtn">
+      <a href="/" style="text-decoration: none">
+        <button id="home">
+          <span class="material-symbols-outlined"> home </span>
+        </button>
+      </a>
+    </div>
+    <div class="mainContent">
+      <div class="card">
+        <h1 id="wordText"><%= words[currentIndex].text %></h1>
 
-      <div id="nextReveal">
-        <label for="voiceSelect">Select Voice:</label>
-        <select id="voiceSelect"></select>
-        <button id="playBtn">Play</button>
-        <audio id="audiourl" controls>
-          <source src="<%= words[currentIndex].audiourl %>" type="audio/mpeg" />
-        </audio>
-        <h2 id="romaji"><%= romajiArray.split(',')[currentIndex] %></h2>
+        <div id="nextReveal">
+          <h3 id="wordTranslation"><%= words[currentIndex].translation %></h3>
+          <!-- <audio id="audiourl">
+            <source
+              src="<%= words[currentIndex].audiourl %>"
+              type="audio/mpeg"
+            />
+          </audio> -->
+          <!-- <button onclick="playPause()" id="play">
+            <span class="material-symbols-outlined"> play_arrow </span>
+          </button> -->
+          <h2 id="romaji">
+            Pronunciation: <%= romajiArray.split(',')[currentIndex] %>
+          </h2>
+          <select id="voiceSelect" hidden></select>
+          <button id="playBtn">
+            <span class="material-symbols-outlined"> play_arrow </span>
+          </button>
+          <p id="soundsLike">You said: <%= hiragana %></p>
+        </div>
+        <div id="nextRevealHolder"></div>
+
+        <form id="inputForm" method="post" action="/pronunciation">
+          <h2>Input:</h2>
+          <input
+            id="recordedInput"
+            name="recordedInput"
+            type="text"
+            value=""
+            readonly
+          />
+          <input
+            type="text"
+            name="wordsForm"
+            id="wordsForm"
+            value="<%= JSON.stringify(words) %>"
+            hidden
+          />
+          <input
+            type="text"
+            name="romajiArrayForm"
+            id="romajiArrayForm"
+            value="<%= romajiArray %>"
+            hidden
+          />
+          <input
+            type="text"
+            name="currentIndexForm"
+            id="currentIndexForm"
+            value="<%= currentIndex %>"
+            hidden
+          />
+          <input
+            type="text"
+            name="wordsArrayForm"
+            id="wordsArrayForm"
+            value=""
+            hidden
+          />
+          <input
+            type="text"
+            name="tryCount"
+            id="tryCount"
+            value="<%= tryCount %>"
+            hidden
+          />
+          <input id="submitBtn" hidden="true" type="submit" />
+        </form>
+      </div>
+      <div class="buttons">
+        <button id="recordBtn">
+          <span class="material-symbols-outlined"> mic </span>
+        </button>
+        <button id="nextBtn">
+          <span class="material-symbols-outlined"> arrow_forward </span>
+        </button>
       </div>
 
-      <form id="inputForm" method="post" action="/pronunciation">
-        <h2>Input:</h2>
-        <input
-          id="recordedInput"
-          name="recordedInput"
-          type="text"
-          value=""
-          readonly
-        />
-        <input
-          type="text"
-          name="wordsForm"
-          id="wordsForm"
-          value="<%= JSON.stringify(words) %>"
-          hidden
-        />
-        <input
-          type="text"
-          name="romajiArrayForm"
-          id="romajiArrayForm"
-          value="<%= romajiArray %>"
-          hidden
-        />
-        <input
-          type="text"
-          name="currentIndexForm"
-          id="currentIndexForm"
-          value="<%= currentIndex %>"
-          hidden
-        />
-        <input
-          type="text"
-          name="wordsArrayForm"
-          id="wordsArrayForm"
-          value=""
-          hidden
-        />
-        <input
-          type="text"
-          name="tryCount"
-          id="tryCount"
-          value="<%= tryCount %>"
-          hidden
-        />
-        <input id="submitBtn" hidden="true" type="submit" />
-      </form>
-    </div>
-    <div class="buttons">
-      <button id="recordBtn">
-        <span class="material-symbols-outlined"> mic </span>
-      </button>
-      <button id="nextBtn">
-        <span class="material-symbols-outlined"> arrow_forward </span>
-      </button>
-    </div>
-
-    <div id="modalBackground" class="modalBackground">
-      <div class="modalContent">
-        <p>You have completed a lesson. Well done!!</p>
-        <div class="finishBtns">
-          <form action="/pronunciation/finish" method="post">
-            <button
-              type="submit"
-              name="modalButton"
-              value="anotherModal"
-              id="anotherModal"
-            >
-              Another round
-            </button>
-            <button
-              type="submit"
-              name="modalButton"
-              value="exitModal"
-              id="exitModal"
-            >
-              Exit
-            </button>
-          </form>
+      <div id="modalBackground" class="modalBackground">
+        <div class="modalContent">
+          <p>You have completed a lesson. Well done!!</p>
+          <div class="finishBtns">
+            <form action="/pronunciation/finish" method="post">
+              <button
+                type="submit"
+                name="modalButton"
+                value="anotherModal"
+                id="anotherModal"
+              >
+                Another round
+              </button>
+              <button
+                type="submit"
+                name="modalButton"
+                value="exitModal"
+                id="exitModal"
+              >
+                Exit
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -127,23 +148,31 @@
     console.log(tryCount, check)
     if (tryCount === 2 && check == true) {
       document.getElementById("nextReveal").style.display = "flex"
+      document.getElementById("nextRevealHolder").style.display = "none"
       document.getElementById("nextBtn").style.display = "block"
       document.getElementById("recordBtn").style.display = "none"
+      document.body.style.backgroundColor = 'rgba(61, 180, 66, 0.8)';
       console.log("correct")
     } else if (tryCount === 2 && check == false) {
       document.getElementById("nextReveal").style.display = "flex"
+      document.getElementById("nextRevealHolder").style.display = "none"
       document.getElementById("nextBtn").style.display = "block"
       document.getElementById("recordBtn").style.display = "none"
+      document.body.style.backgroundColor = 'rgba(200, 52, 52, 0.8)';
       console.log("all wrong")
     } else if (tryCount < 2 && check == false){
       document.getElementById("nextReveal").style.display = "none"
+      document.getElementById("nextRevealHolder").style.display = "block"
       document.getElementById("nextBtn").style.display = "none"
       document.getElementById("recordBtn").style.display = "block"
+      document.body.style.backgroundColor = 'rgba(200, 52, 52, 0.8)';
       console.log("mid wrong")
     } else {
       document.getElementById("nextReveal").style.display = "none"
+      document.getElementById("nextRevealHolder").style.display = "block"
       document.getElementById("nextBtn").style.display = "none"
       document.getElementById("recordBtn").style.display = "block"
+      document.body.style.backgroundColor = 'rgba(241, 229, 229, 0.8)';
       console.log("first word")
     }
 
@@ -188,11 +217,13 @@
       if (currentIndex <= words.length - 1) {
         document.getElementById("currentIndexForm").value = currentIndex
         document.getElementById("wordText").innerText = words[currentIndex].text
-        document.getElementById("audiourl").src = words[currentIndex].audiourl
+        //document.getElementById("audiourl").src = words[currentIndex].audiourl
         document.getElementById("romaji").innerText = romajiArray.split(',')[currentIndex]
         document.getElementById('nextBtn').style.display = "none"
         document.getElementById("nextReveal").style.display = "none"
+        document.getElementById("nextRevealHolder").style.display = "block"
         document.getElementById("recordBtn").style.display = "block"
+        document.body.style.backgroundColor = 'white';
       } else {
         modal.style.display = "block"
       }
@@ -219,15 +250,16 @@
 
         // Filter voices by language (Change 'en' to your target language code)
         const lang = "ja";
-        const filteredVoices = voices.filter(voice => voice.lang.startsWith(lang));
+        const desiredVoiceName = "Google 日本語";
+        const desiredVoice = voices.find(voice => voice.lang.startsWith(lang) && voice.name === desiredVoiceName);
 
-        filteredVoices.forEach(voice => {
+        if (desiredVoice) {
             const option = document.createElement("option");
-            option.value = voice.name;
-            option.textContent = `${voice.name} (${voice.lang})`;
+            option.value = desiredVoice.name;
+            option.textContent = `${desiredVoice.name} (${desiredVoice.lang})`;
             voiceSelect.appendChild(option);
-        });
-    }
+          }
+        }
 
     // Populate voices when they change
     speechSynthesis.onvoiceschanged = populateVoices;
@@ -245,5 +277,12 @@
 
     // Initial voice population
     populateVoices();
+
+    let audio = document.getElementById("audiourl");
+    let play = document.getElementById("play")
+
+    function playPause() {
+      audio.play()
+    }
   </script>
 </html>
