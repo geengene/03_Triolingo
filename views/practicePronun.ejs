@@ -61,6 +61,13 @@
           value=""
           hidden
         />
+        <input
+          type="text"
+          name="tryCount"
+          id="tryCount"
+          value="<%= tryCount %>"
+          hidden
+        />
         <input id="submitBtn" hidden="true" type="submit" />
       </form>
     </div>
@@ -115,16 +122,29 @@
     console.log("wordsArray:", wordsArray)
     const romajiArray = "<%= romajiArray %>"
 
-    const nextBtn = <%= nextBtn %>
-    console.log(nextBtn)
-    if (nextBtn === 3){
+    const tryCount = <%= tryCount %>
+    const check = <%= check %>
+    console.log(tryCount, check)
+    if (tryCount === 2 && check == true) {
       document.getElementById("nextReveal").style.display = "flex"
       document.getElementById("nextBtn").style.display = "block"
       document.getElementById("recordBtn").style.display = "none"
+      console.log("correct")
+    } else if (tryCount === 2 && check == false) {
+      document.getElementById("nextReveal").style.display = "flex"
+      document.getElementById("nextBtn").style.display = "block"
+      document.getElementById("recordBtn").style.display = "none"
+      console.log("all wrong")
+    } else if (tryCount < 2 && check == false){
+      document.getElementById("nextReveal").style.display = "none"
+      document.getElementById("nextBtn").style.display = "none"
+      document.getElementById("recordBtn").style.display = "block"
+      console.log("mid wrong")
     } else {
       document.getElementById("nextReveal").style.display = "none"
       document.getElementById("nextBtn").style.display = "none"
       document.getElementById("recordBtn").style.display = "block"
+      console.log("first word")
     }
 
     const recognition = new SpeechRecognition();

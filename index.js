@@ -221,7 +221,8 @@ app.get("/pronunciation", async (req, res) => {
       words: words,
       wordsArray: wordsArray,
       currentIndex: currentIndex,
-      nextBtn: 0,
+      tryCount: -1,
+      check: true,
       romajiArray: romajiArray,
     });
   } catch (err) {
@@ -229,50 +230,15 @@ app.get("/pronunciation", async (req, res) => {
   }
 });
 
-var nextBtn = 0;
 app.post("/pronunciation", async (req, res) => {
   const form = req.body;
-  console.log(form.wordsArrayForm);
-  // var hiragana = await fetch(
-  //   `https://jisho.org/api/v1/search/words?keyword=${form.recordedInput}`,
-  //   {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   }
-  // )
-  //   .then((response) => response.json())
-  //   .then((data) => {
-  //     return data.data[0].japanese[0].reading;
-  //   })
-  //   .catch((error) => console.error(error));
-  // if (hiragana == undefined) {
+  var tryCount = parseInt(form.tryCount);
   var yomiHiragana1 = await axios.post(
     YOMI_API,
     `text=${form.recordedInput}&mode=normal&to=romaji&romaji_system=hepburn`,
     headers
   );
   var hiragana = JSON.parse(yomiHiragana1.data).converted;
-  // }
-
-  // var hiragana2 = await fetch(
-  //   `https://jisho.org/api/v1/search/words?keyword=${
-  //     JSON.parse(form.wordsForm)[form.currentIndexForm].text
-  //   }`,
-  //   {
-  //     method: "GET",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   }
-  // )
-  //   .then((response) => response.json())
-  //   .then((data) => {
-  //     return data.data[0].japanese[0].reading;
-  //   })
-  //   .catch((error) => console.error(error));
-  // if (hiragana2 == undefined) {
   var yomiHiragana2 = await axios.post(
     YOMI_API,
     `text=${
@@ -283,13 +249,16 @@ app.post("/pronunciation", async (req, res) => {
   var hiragana2 = JSON.parse(yomiHiragana2.data).converted;
   // }
   console.log(similarityPercentage(hiragana, hiragana2));
-  if (similarityPercentage(hiragana, hiragana2) >= 50) {
-    nextBtn = 3;
+  if (similarityPercentage(hiragana, hiragana2) > 50) {
+    tryCount = 2;
+    var check = true;
   } else {
-    nextBtn = (nextBtn + 1) % 4;
+    tryCount = (tryCount + 1) % 3;
+    var check = false;
   }
 
   console.log(
+    tryCount,
     hiragana,
     hiragana2,
     form.recordedInput,
@@ -299,8 +268,9 @@ app.post("/pronunciation", async (req, res) => {
   res.render("practicePronun.ejs", {
     words: JSON.parse(form.wordsForm),
     currentIndex: parseInt(form.currentIndexForm),
-    nextBtn: nextBtn,
     romajiArray: form.romajiArrayForm,
+    check: check,
+    tryCount: tryCount,
   });
 });
 
