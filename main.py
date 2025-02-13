@@ -24,7 +24,6 @@ vocab = lingo.get_vocabulary(language_abbr=language)
 # known_words = lingo.get_known_words('ja')
 
 
-# Database connection setup
 conn = psycopg2.connect(
     dbname=os.getenv("DB_NAME"),
     user=os.getenv("USER_NAME"),
@@ -34,7 +33,6 @@ conn = psycopg2.connect(
 )
 cur = conn.cursor()
 
-# Create table if not exists
 cur.execute(
     """
 CREATE TABLE IF NOT EXISTS vocabulary (

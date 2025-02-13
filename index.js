@@ -34,28 +34,19 @@ db.query(
 
 function similarityPercentage(word1, word2) {
   if (!word1 || !word2) return 0;
-
-  // Convert words to lowercase and split into character arrays
   const arr1 = word1.toLowerCase().split("");
   const arr2 = word2.toLowerCase().split("");
-
   let matchCount = 0;
   const charMap = {};
-
-  // Count characters in word1
   for (let char of arr1) {
     charMap[char] = (charMap[char] || 0) + 1;
   }
-
-  // Count matching characters in word2
   for (let char of arr2) {
     if (charMap[char] && charMap[char] > 0) {
       matchCount++;
       charMap[char]--;
     }
   }
-
-  // Calculate percentage similarity
   const maxLength = Math.max(word1.length, word2.length);
   return (matchCount / maxLength) * 100;
 }

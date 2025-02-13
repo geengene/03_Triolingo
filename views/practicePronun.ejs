@@ -248,7 +248,6 @@
         voices = speechSynthesis.getVoices();
         voiceSelect.innerHTML = ""; // Clear previous options
 
-        // Filter voices by language (Change 'en' to your target language code)
         const lang = "ja";
         const desiredVoiceName = "Google 日本語";
         const desiredVoice = voices.find(voice => voice.lang.startsWith(lang) && voice.name === desiredVoiceName);
@@ -261,21 +260,18 @@
           }
         }
 
-    // Populate voices when they change
     speechSynthesis.onvoiceschanged = populateVoices;
 
     playBtn.addEventListener("click", () => {
         const text = textInput.innerText;
         const utterance = new SpeechSynthesisUtterance(text);
 
-        // Set selected voice
         const selectedVoice = voiceSelect.value;
         utterance.voice = voices.find(voice => voice.name === selectedVoice);
 
         speechSynthesis.speak(utterance);
     });
 
-    // Initial voice population
     populateVoices();
 
     let audio = document.getElementById("audiourl");
