@@ -76,7 +76,7 @@ npm test
 
 ## Road Map
 
-- currently only practising vocabulary works
+- currently only practising vocabulary and pronunciation works
 
 ### TODO
 
