@@ -1,5 +1,6 @@
 body {
-  margin: 120px;
+  margin: 0;
+  margin-top: 15vh;
 }
 .welcomeText {
   text-align: center;
@@ -8,7 +9,7 @@ body {
 .actionButtons {
   display: grid;
   grid-template-columns: 20vw 20vw;
-  grid-auto-rows: 15vw;
+  grid-auto-rows: 25vh;
   column-gap: 10px;
   row-gap: 10px;
   justify-content: center;
