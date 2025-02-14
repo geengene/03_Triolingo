@@ -1,5 +1,7 @@
 # TRIOLINGO
 
+DEMO: https://www.youtube.com/watch?v=TQN6EXncQ4U&t=195s
+
 ## Project Setup
 
 Follow these instructions to set up the project locally on your machine.
