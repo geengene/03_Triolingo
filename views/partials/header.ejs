@@ -112,9 +112,9 @@
     }
   });
 
-  var settingsModal = document.getElementById("settingsModal");
-  var settingsBtn = document.getElementById("settingsBtn");
-  var settingsSpan = document.getElementsByClassName("close")[0];
+  let settingsModal = document.getElementById("settingsModal");
+  let settingsBtn = document.getElementById("settingsBtn");
+  let settingsSpan = document.getElementsByClassName("close")[0];
   settingsBtn.onclick = function () {
     settingsModal.style.display = "block";
   };
@@ -122,9 +122,9 @@
     settingsModal.style.display = "none";
   };
 
-  var infoModal = document.getElementById("infoModal");
-  var infoBtn = document.getElementById("infoBtn");
-  var infoSpan = document.getElementsByClassName("close")[1];
+  let infoModal = document.getElementById("infoModal");
+  let infoBtn = document.getElementById("infoBtn");
+  let infoSpan = document.getElementsByClassName("close")[1];
   infoBtn.onclick = function () {
     infoModal.style.display = "block";
   };
@@ -132,8 +132,8 @@
     infoModal.style.display = "none";
   };
 
-  var updateModal = document.getElementById("updateModal");
-  var updateBtn = document.getElementById("updateBtn");
+  let updateModal = document.getElementById("updateModal");
+  let updateBtn = document.getElementById("updateBtn");
   updateBtn.addEventListener("click", () => {
     updateModal.style.display = "block";
     fetch("/populate")

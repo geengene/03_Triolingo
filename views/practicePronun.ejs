@@ -198,13 +198,13 @@
     const recordedInput = document.getElementById("recordedInput")
     const submitBtn = document.getElementById("submitBtn")
 
-    var modal= document.getElementById("modalBackground")
-    var exitModal = document.getElementById("exitModal")
+    let modal= document.getElementById("modalBackground")
+    let exitModal = document.getElementById("exitModal")
     exitModal.onclick = function() {
       modal.style.display = "none";
     }
     recognition.onresult = async function(event) {
-      var input = event.results[0][0].transcript;
+      let input = event.results[0][0].transcript;
       recordedInput.value = input;
       console.log('Confidence: ' + event.results[0][0].confidence);
       document.getElementById("currentIndexForm").value = currentIndex
