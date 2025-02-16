@@ -201,12 +201,12 @@ app.get("/pronunciation", async (req, res) => {
     words.forEach((word) => {
       wordsArray.push(word.text);
     });
-    var yomiArray = await axios.post(
+    let yomiArray = await axios.post(
       YOMI_API,
       `text=${wordsArray}&mode=normal&to=romaji&romaji_system=hepburn`,
       headers
     );
-    var romajiArray = JSON.parse(yomiArray.data).converted;
+    let romajiArray = JSON.parse(yomiArray.data).converted;
     const currentIndex = 0;
     res.render("practicePronun.ejs", {
       words: words,
@@ -224,30 +224,30 @@ app.get("/pronunciation", async (req, res) => {
 
 app.post("/pronunciation", async (req, res) => {
   const form = req.body;
-  var tryCount = parseInt(form.tryCount);
-  var yomiHiragana1 = await axios.post(
+  let tryCount = parseInt(form.tryCount);
+  let yomiHiragana1 = await axios.post(
     YOMI_API,
     `text=${form.recordedInput}&mode=normal&to=romaji&romaji_system=hepburn`,
     headers
   );
-  var hiragana = JSON.parse(yomiHiragana1.data).converted;
+  let hiragana = JSON.parse(yomiHiragana1.data).converted;
 
-  var yomiHiragana2 = await axios.post(
+  let yomiHiragana2 = await axios.post(
     YOMI_API,
     `text=${
       JSON.parse(form.wordsForm)[form.currentIndexForm].text
     }&mode=normal&to=romaji&romaji_system=hepburn`,
     headers
   );
-  var hiragana2 = JSON.parse(yomiHiragana2.data).converted;
+  let hiragana2 = JSON.parse(yomiHiragana2.data).converted;
 
   console.log(similarityPercentage(hiragana, hiragana2));
   if (similarityPercentage(hiragana, hiragana2) > 50) {
     tryCount = 2;
-    var check = true;
+    let check = true;
   } else {
     tryCount = (tryCount + 1) % 3;
-    var check = false;
+    let check = false;
   }
 
   console.log(
