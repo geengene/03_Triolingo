@@ -159,7 +159,6 @@ app.get("/vocabulary", async (req, res) => {
       "SELECT * FROM vocabulary ORDER BY confidence ASC, RANDOM() LIMIT $1",
       [settings.rows[0].vocab_limit]
     );
-    // TODO: solve no words error when database is empty
     const currentIndex = 0;
     res.render("practiceVocab.ejs", { words: vocab.rows, currentIndex });
   } catch (err) {
